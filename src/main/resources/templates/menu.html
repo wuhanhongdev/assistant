@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <table id="menuList" class="table table-hover"></table>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Core.table("menuList","system/menu/list",[
+            {title: '全选',field: 'select',checkbox: true,width: 25,align: 'center',valign: 'middle'},
+            {title: 'id',field: 'id',visible: false},
+            {title: '菜单编号',field: 'code',sortable: false,align: 'center'},
+            {title: '菜单编号',field: 'code',sortable: false,align: 'center'},
+            {title: '菜单名称',field: 'name',sortable: false,align: 'center'},
+            {title: '菜单图标',field: 'icon',sortable: false,align: 'center'},
+            {title: 'url地址',field: 'url',sortable: false,align: 'center'},
+            {title: '菜单排序号',field: 'num',sortable: false,align: 'center'},
+            {title: '备注',field: 'tips',sortable: false,align: 'center'},
+            {title: '状态',field: 'status',sortable: false,align: 'center'}
+        ]);
+    });
+</script>
+</body>
+</html>

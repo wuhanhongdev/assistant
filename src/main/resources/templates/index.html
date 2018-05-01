@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <title>钱场镇智慧党建管理平台</title>
+    <link href="css/lib/toastr/toastr.min.css" rel="stylesheet">
+    <link href="css/lib/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="css/lib/calendar2/semantic.ui.min.css" rel="stylesheet">
+    <link href="css/lib/calendar2/pignose.calendar.min.css" rel="stylesheet">
+    <link href="css/lib/owl.carousel.min.css" rel="stylesheet"/>
+    <link href="css/lib/owl.theme.default.min.css" rel="stylesheet"/>
+    <link href="css/helper.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="ztree/css/metroStyle/metroStyle.css" rel="stylesheet">
+    <link href="grid/bootstrap-table.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="fix-header fix-sidebar">
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+    </svg>
+</div>
+<div id="main-wrapper">
+    <div class="header bg-primary">
+        <nav class="navbar top-navbar navbar-expand-md navbar-light">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="javascript:void(0)">
+                    <b><img src="images/logo.png" alt="homepage" class="dark-logo"/></b>
+                    <span><img src="images/logo-text.png" alt="homepage" class="dark-logo"/></span>
+                </a>
+            </div>
+            <div class="navbar-collapse">
+                <ul class="navbar-nav mr-auto mt-md-0">
+                    <h4 class="text-white">钱场镇智慧党建管理平台</h4>
+                </ul>
+                <ul class="navbar-nav my-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle text-white" href="javascript:void(0)" th:inline="text">
+                            欢迎你：[[${#httpSession.getAttribute('userLoginInfo').name}]]
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" style="font-size: 11px; line-height: 21px;" id="updatePassword" class="nav-link btn btn-dark btn-outline m-b-10 m-l-5">修改密码</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" style="font-size: 11px; line-height: 21px;" id="logout" class="nav-link btn btn-dark btn-outline m-b-10 m-l-5">&nbsp;&nbsp;退出&nbsp;&nbsp;</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="left-sidebar">
+        <div class="scroll-sidebar">
+            <nav class="sidebar-nav">
+                <ul id="sidebarnav" th:utext="${menu}">
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="page-wrapper">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h3 class="text-primary" id="pageTitle">Dashboard</h3></div>
+            <div class="col-md-7 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active" id="pageName">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <div class="container-fluid" id="pageContent">此处包含审批提醒</div>
+    </div>
+</div>
+<script src="js/lib/jquery/jquery.min.js"></script>
+<script src="js/lib/bootstrap/js/popper.min.js"></script>
+<script src="js/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/jquery.slimscroll.js"></script>
+<script src="js/sidebarmenu.js"></script>
+<script src="js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<script src="js/lib/morris-chart/raphael-min.js"></script>
+<script src="js/lib/morris-chart/morris.js"></script>
+<script src="js/lib/morris-chart/dashboard1-init.js"></script>
+<script src="js/lib/calendar-2/moment.latest.min.js"></script>
+<script src="js/lib/calendar-2/semantic.ui.min.js"></script>
+<script src="js/lib/calendar-2/prism.min.js"></script>
+<script src="js/lib/calendar-2/pignose.calendar.min.js"></script>
+<script src="js/lib/calendar-2/pignose.init.js"></script>
+<script src="js/lib/owl-carousel/owl.carousel.min.js"></script>
+<script src="js/lib/owl-carousel/owl.carousel-init.js"></script>
+<script src="js/scripts.js"></script>
+<script src="js/custom.min.js"></script>
+<script src="grid/bootstrap-table.min.js"></script>
+<script src="grid/locale/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="ueditor/ueditor.all.js"></script>
+<script type="text/javascript" charset="utf-8" src="ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="ztree/js/jquery.ztree.all.min.js"></script>
+<script src="js/jquery.form.value.js"></script>
+<script src="js/jquery.form.min.js"></script>
+<script src="js/jquery.json.min.js"></script>
+<script src="js/base64.js"></script>
+<script src="validator/jquery.validate.min.js"></script>
+<script src="validator/additional-methods.min.js"></script>
+<script src="validator/localization/messages_zh.min.js"></script>
+<script src="js/lib/sweetalert/sweetalert.min.js"></script>
+<script src="js/lib/toastr/toastr.min.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    var orgId = null;
+    var isInstance = 0;
+    UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+    UE.Editor.prototype.getActionUrl = function(action) {
+        /*<![CDATA[*/
+            var host = [[${serverPath}]];
+        /*]]>*/
+        if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadimage') {
+            return host + '/ueditor/imgUpload';
+        } else {
+            return this._bkGetActionUrl.call(this, action);
+        }
+    };
+    function formatStatus(value,row,index) {
+        if(value == 1) {
+            return "启用";
+        } else {
+            return "禁用";
+        }
+    };
+    $(function () {
+        Core.click("logout",function () {
+            Core.alertWarning("退出系统","确定要退出系统吗?",function () {
+                Core.ajaxGet("logout",null);
+                location.reload();
+            });
+        });
+        Core.click("updatePassword",function () {
+            Core.loadPage("jump?source=updatePassword","修改密码");
+        });
+    });
+</script>
+<script src="js/Core.js"></script>
+</body>
+</html>

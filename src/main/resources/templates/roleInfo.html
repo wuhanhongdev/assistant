@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="row">
+    <div class="card card-outline-info col-lg-6">
+        <div class="card-header">
+            <h4 class="m-b-0 text-white">角色信息</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="form-validation" style="margin-top: 15px;">
+                    <form class="form-valide form-horizontal" action="system/role/saveOrUpdate" method="post" id="roleForm">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="id" id="id">
+                                        <label class="control-label text-right col-md-3">人员姓名</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="name" name="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">状态</label>
+                                        <div class="col-md-9">
+                                            <select id="status" name="status" class="form-control custom-select" required>
+                                                <option>--选择状态--</option>
+                                                <option value="1">启用</option>
+                                                <option value="2">禁用</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    function isUpdate() {
+        /*<![CDATA[*/
+        var param = [[${param}]];
+        /*]]>*/
+        if(param != null && param.param != null && param.param[0] != null) {
+            console.info("页面"+param.param[0]);
+            console.info("页面"+Base64.decode(param.param[0]));
+            var formData = JSON.parse(decodeURI(param.param[0]));
+            console.info(formData);
+            $("#roleForm").fillValue(formData)
+        }
+    }
+$(function () {
+    isUpdate();
+    $("#roleForm").validate({
+        submitHandler: function(form) {
+            jQuery(form).ajaxSubmit(function () {
+                Core.toastrSuccess("操作成功");
+                Core.loadPage("jump?source=role","角色管理");
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

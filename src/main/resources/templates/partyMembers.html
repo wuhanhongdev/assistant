@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+<div class="row">
+    <div class="text-left" style="margin-top: 15px;margin-left: 15px;">
+        <button type="button" id="button-add" class="btn btn-success m-b-10 m-l-5">&nbsp;&nbsp;添加&nbsp;&nbsp;</button>
+        <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;</button>
+        <button type="button" id="button-integration" class="btn btn-warning m-b-10 m-l-5">设置积分信息</button>
+        <button type="button" id="button-export" class="btn btn-warning m-b-10 m-l-5">导出积分信息</button>
+        <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
+    </div>
+</div>
+<div class="row">
+    <div class="card card-outline-info col-lg-12">
+        <div class="card-body">
+            <div class="card-content">
+                <table id="memberList" class="table table-hover"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function formatPhoto(value,row,index) {
+        if(value != null){
+            return "<img src='"+value+"' width='40' height='40'/>";
+        }
+    }
+    $(function () {
+        Core.table("memberList", "member/party/list", [
+            {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
+            {title: 'id', field: 'id', visible: false},
+            {title: 'orgId', field: 'orgId', visible: false},
+            {title: '姓名', field: 'name', sortable: false, align: 'center'},
+            {title: '归属部门', field: 'orgName', sortable: false, align: 'center'},
+            {title: '出生年月', field: 'birthday', sortable: false, align: 'center'},
+            {title: '学历', field: 'degree', sortable: false, align: 'center'},
+            {title: '入党时间', field: 'inTime', sortable: false, align: 'center'},
+            {title: '是否书记', field: 'isManager', sortable: false, align: 'center', formatter: formatStatus},
+            {title: '当前积分', field: 'integration', sortable: false, align: 'center'},
+            {title: '评议等级', field: 'level', sortable: false, align: 'center'},
+            {title: '星级党员', field: 'starMember', sortable: false, align: 'center'},
+            {title: '星级支书', field: 'starManager', sortable: false, align: 'center'},
+            {title: '党员四创', field: 'memberCreate', sortable: false, align: 'center'},
+            {title: '争星承诺', field: 'promise', sortable: false, align: 'center'},
+            {title: '照片', field: 'photosrc', sortable: false, align: 'center', formatter: formatPhoto},
+            {title: '二维码', field: 'qrcode', sortable: false, align: 'center', formatter: formatPhoto}
+        ]);
+
+        Core.click("button-add",function () {
+            Core.loadPage("jump?source=memberInfo","党员信息添加");
+        });
+        Core.click("button-modify", function () {
+            var select = $("#memberList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            var data = encodeURI(JSON.stringify(select[0]));
+            Core.loadPage("jump?source=memberInfo&param="+data, "修改党员信息");
+        });
+        Core.click("button-delete", function () {
+            var select = $("#memberList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            Core.alertWarning("删除操作员","是否要将改操作员删除?",function(){
+                Core.ajaxGet("member/party/delete?userId="+select[0].id,function (result) {
+                    if(result != null && result.code == 1) {
+                        Core.toastrSuccess("删除成功");
+                        Core.tableRefresh("memberList")
+                    }
+                });
+            });
+        });
+        Core.click("button-integration",function () {
+            var select = $("#memberList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+
+            Core.loadPage("jump?source=integration&param="+select[0].id);
+        });
+
+        Core.click("button-export",function(){
+            var select = $("#memberList").bootstrapTable('getSelections');
+            if(select.length == 0) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+
+            var memberId = "";
+            for(var i=0;i<select.length;i++){
+                if(i == select.length-1){
+                    memberId += select[i].id;
+                } else {
+                    memberId += select[i].id + ",";
+                }
+            }
+
+            window.open("member/integration/export?memberIds="+memberId);
+        });
+    });
+</script>
+</html>

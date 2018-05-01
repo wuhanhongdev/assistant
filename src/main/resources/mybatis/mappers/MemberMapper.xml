@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.MemberMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.Member">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="birthday" property="birthday"/>
+        <result column="degree" property="degree"/>
+        <result column="in_time" property="inTime"/>
+        <result column="is_manager" property="isManager"/>
+        <result column="integration" property="integration"/>
+        <result column="level" property="level"/>
+        <result column="star_member" property="starMember"/>
+        <result column="star_manager" property="starManager"/>
+        <result column="member_create" property="memberCreate"/>
+        <result column="promise" property="promise"/>
+        <result column="photosrc" property="photosrc"/>
+        <result column="org_id" property="orgId"/>
+        <result column="pass" property="pass"/>
+        <result column="qrcode" property="qrcode"/>
+    </resultMap>
+
+    <sql id="all_column">
+        id,
+        name,
+        birthday,
+        degree,
+        in_time,
+        is_manager,
+        integration,
+        level,
+        star_member,
+        star_manager,
+        member_create,
+        promise,
+        photosrc,
+        org_id,
+        pass,
+        qrcode
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
+            <if test="name != null"> name, </if>
+            <if test="birthday != null"> birthday, </if>
+            <if test="degree != null"> degree, </if>
+            <if test="inTime != null"> in_time, </if>
+            <if test="isManager != null"> is_manager, </if>
+            <if test="integration != null"> integration, </if>
+            <if test="level != null"> level, </if>
+            <if test="starMember != null"> star_member, </if>
+            <if test="starManager != null"> star_manager, </if>
+            <if test="memberCreate != null"> member_create, </if>
+            <if test="promise != null"> promise, </if>
+            <if test="photosrc != null"> photosrc, </if>
+            <if test="orgId != null"> org_id, </if>
+            <if test="pass != null"> pass, </if>
+            <if test="qrcode != null"> qrcode, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id}, </if>
+            <if test="name != null"> #{name}, </if>
+            <if test="birthday != null"> #{birthday}, </if>
+            <if test="degree != null"> #{degree}, </if>
+            <if test="inTime != null"> #{inTime}, </if>
+            <if test="isManager != null"> #{isManager}, </if>
+            <if test="integration != null"> #{integration}, </if>
+            <if test="level != null"> #{level}, </if>
+            <if test="starMember != null"> #{starMember}, </if>
+            <if test="starManager != null"> #{starManager}, </if>
+            <if test="memberCreate != null"> #{memberCreate}, </if>
+            <if test="promise != null"> #{promise}, </if>
+            <if test="photosrc != null"> #{photosrc}, </if>
+            <if test="orgId != null"> #{orgId}, </if>
+            <if test="pass != null"> #{pass}, </if>
+            <if test="qrcode != null"> #{qrcode}, </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        INSERT INTO t_member(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{id},
+            #{name},
+            #{birthday},
+            #{degree},
+            #{inTime},
+            #{isManager},
+            #{integration},
+            #{level},
+            #{starMember},
+            #{starManager},
+            #{memberCreate},
+            #{promise},
+            #{photosrc},
+            #{orgId},
+            #{pass},
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE t_member
+        <set>
+            <if test="id != null"> id = #{id}, </if>
+            <if test="name != null"> name = #{name}, </if>
+            <if test="birthday != null"> birthday = #{birthday}, </if>
+            <if test="degree != null"> degree = #{degree}, </if>
+            <if test="inTime != null"> in_time = #{inTime}, </if>
+            <if test="isManager != null"> is_manager = #{isManager}, </if>
+            <if test="integration != null"> integration = #{integration}, </if>
+            <if test="level != null"> level = #{level}, </if>
+            <if test="starMember != null"> star_member = #{starMember}, </if>
+            <if test="starManager != null"> star_manager = #{starManager}, </if>
+            <if test="memberCreate != null"> member_create = #{memberCreate}, </if>
+            <if test="promise != null"> promise = #{promise}, </if>
+            <if test="photosrc != null"> photosrc = #{photosrc}, </if>
+            <if test="orgId != null"> org_id = #{orgId}, </if>
+            <if test="pass != null"> pass = #{pass},</if>
+            <if test="qrcode != null"> qrcode = #{qrcode} </if>
+        </set>
+         WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_member where id = #{id}
+    </delete>
+
+    <select id="selectMemberInfo" parameterType="map" resultType="com.power.assistant.model.MemberVo">
+        SELECT
+          m.id,
+          m.name,
+          m.birthday,
+          m.degree,
+          m.in_time       AS inTime,
+          m.is_manager    as isManager,
+          (SELECT sum(score) FROM t_integration_member WHERE member_id = m.id) as integration,
+          m.level,
+          m.star_member   AS starMember,
+          m.star_manager  AS starManager,
+          m.member_create AS memberCreate,
+          m.promise,
+          m.photosrc,
+          m.org_id        AS orgId,
+          o.fullname      AS orgName,
+          m.qrcode
+        FROM t_member m
+          LEFT JOIN t_org o ON o.id = m.org_id where 1=1
+
+        <if test="memberId != null">
+            and m.id = #{memberId}
+        </if>
+    </select>
+</mapper>

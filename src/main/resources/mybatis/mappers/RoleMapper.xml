@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.RoleMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.Role">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="status" property="status"/>
+        <result column="delete" property="canDelete"/>
+    </resultMap>
+
+    <insert id="insertRole">
+        INSERT INTO t_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null"> name, </if>
+            <if test="status != null"> status, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null"> #{name}, </if>
+            <if test="status != null"> #{status}, </if>
+        </trim>
+    </insert>
+
+    <update id="updateById">
+        UPDATE t_role
+        <set>
+            <if test="name != null"> name = #{name}, </if>
+            <if test="status != null"> status = #{status} </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM t_role where id = #{roleId}
+    </delete>
+</mapper>

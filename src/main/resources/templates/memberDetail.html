@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <title>钱场镇智慧党建管理平台</title>
+    <link href="../css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/helper.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .customtab2 li a.nav-link:hover {
+            background: #e6000d none repeat scroll 0 0;
+            color: #ffffff;
+        }
+
+        .customtab2 li a.nav-link.active {
+            background: #e6000d none repeat scroll 0 0;
+            color: #ffffff;
+        }
+
+        .tableTitle {
+            font-size: 11px;
+            font-family: inherit;
+            text-align: right;
+        }
+
+        .tableContent {
+            font-size: 11px;
+            font-family: inherit;
+            text-align: center;
+            border-bottom: 1px solid #2F96B4;
+        }
+    </style>
+</head>
+
+<body>
+<div id="main-wrapper">
+    <div class="page-wrapper"
+         style="padding-top: 10px;background-image: url('../images/nrbg.jpg');background-size:cover;padding-bottom: 0px;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card" style="margin: 0px;top: 20%;background: rgba(255,255,255,0);padding: 0px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div style="width: 30%;display:inline">
+                                    <img src="http://localhost:8999/assistant/f1468c4d4e9d4aa79701c10db813c5eb.jpg" width="100%" height="100%">
+                                </div>
+                                <div style="width: 65%;display:inline;margin-left: 10px;">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td width="25%" class="tableTitle">所属机构</td>
+                                            <td width="25%" class="tableContent" colspan="3"
+                                                th:inline="text">[[${member.orgName}]]
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="25%" class="tableTitle">姓&nbsp;&nbsp;&nbsp;&nbsp;名</td>
+                                            <td width="25%" class="tableContent" th:inline="text">[[${member.name}]]
+                                            </td>
+                                            <td width="25%" class="tableTitle">出生年月</td>
+                                            <td width="25%" class="tableContent" th:inline="text">
+                                                [[${member.birthday}]]
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="25%" class="tableTitle">学&nbsp;&nbsp;&nbsp;&nbsp;历</td>
+                                            <td width="25%" class="tableContent" th:inline="text">[[${member.degree}]]
+                                            </td>
+                                            <td width="25%" class="tableTitle">入党时间</td>
+                                            <td width="25%" class="tableContent" th:inline="text">[[${member.inTime}]]
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="25%" class="tableTitle">当前积分</td>
+                                            <td width="25%" class="tableContent" th:inline="text">
+                                                [[${member.integration}]]
+                                            </td>
+                                            <td width="25%" class="tableTitle">评议等级</td>
+                                            <td width="25%" class="tableContent" th:inline="text">
+                                                [[${member.starMember}]]
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="25%" class="tableTitle">星&nbsp;&nbsp;&nbsp;&nbsp;级</td>
+                                            <td width="25%" class="tableContent" colspan="3" align="center">五星支书</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="margin: 0px;top: 25%;background: rgba(255,255,255,0);padding: 0px;">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs customtab2" role="tablist">
+                                <li class="nav-item"><a class="nav-link active"
+                                                        style="padding-left: 2px;padding-right: 2px; font-size: smaller;"
+                                                        data-toggle="tab" href="#profile7" role="tab"><span
+                                        class="hidden-sm-up">党员承诺</span><span class="hidden-xs-down">党员承诺</span></a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link"
+                                                        style="padding-left: 2px;padding-right: 2px;font-size: smaller; "
+                                                        data-toggle="tab" href="#messages7" role="tab"><span
+                                        class="hidden-sm-up">积分明细</span> <span class="hidden-xs-down">积分明细</span></a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link"
+                                                        style="padding-left: 2px;padding-right: 2px;font-size: smaller;"
+                                                        data-toggle="tab" href="#messages8" role="tab"><span
+                                        class="hidden-sm-up">积分标准</span> <span class="hidden-xs-down">积分标准</span></a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link"
+                                                        style="padding-left: 2px;padding-right: 2px;font-size: smaller;"
+                                                        data-toggle="tab" href="#messages9" role="tab"><span
+                                        class="hidden-sm-up">支部介绍</span> <span class="hidden-xs-down">支部介绍</span></a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link"
+                                                        style="padding-left: 2px;padding-right: 2px;font-size: smaller;"
+                                                        data-toggle="tab" href="#messages10" role="tab"><span
+                                        class="hidden-sm-up">支部活动</span> <span class="hidden-xs-down">支部活动</span></a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="height: 450px;overflow: auto;">
+                                <div class="tab-pane active" id="profile7" role="tabpanel">
+                                    <div class="p-20" th:inline="text">
+                                        [[${member.promise}]]
+                                    </div>
+                                </div>
+                                <div class="tab-pane  p-20" id="messages7" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="word-break:break-all; word-wrap:break-all;">
+                                            <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>积分项目</th>
+                                                <th>分数</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="integration,stat : ${integrations}">
+                                                <td width="10%" th:text="${stat.index}"></td>
+                                                <td width="80%" th:text="${integration.content}"></td>
+                                                <td width="10%" th:text="${integration.score}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane p-20" id="messages8" role="tabpanel">
+                                    <table class="table table-bordered" style="word-break:break-all; word-wrap:break-all;">
+                                        <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>积分项目</th>
+                                            <th>分数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="integration,stat : ${integrations}">
+                                            <td width="10%" th:text="${stat.index}"></td>
+                                            <td width="80%" th:text="${integration.content}"></td>
+                                            <td width="10%" th:text="${integration.score}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table" style="word-break:break-all; word-wrap:break-all;">
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">3</th>
+                                                <td>Blue Backpack For Baby</td>
+                                                <td><span class="badge badge-danger">Extended</span></td>
+                                                <td>January 25</td>
+                                                <td class="color-danger">$14.85</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <pre>
+                                        一、政治好
+                                        1、理想信念坚定，对党忠诚，不信谣、不传谣，不发表有损党的形象的言论。符合基本要求记10分。
+                                        2、积极参加社区党组织开展的支部主题党日、三会一课、学习培训等活动。流动党员通过手机、微信、QQ等方式与党组织联系的，全年累计不超过12分
+                                        3、每月按时、足额交纳党费。按月、足额交纳党费每次记1分，全年累计不超过12分
+                                        二、纪律好
+                                        4、带头支持社区“两委”班子工作，带头执行社区党组织决议和决定。符合基本要求的记8分。
+                                        5、带头遵守法律法规和社区公约，为人公道正派，诚实守信。全年未参与非法、越级上访，群体性事件或违反计划生育政策、偷税漏税、违章建房等违法违规行为，符合基本要求的记5分。
+                                        6、带头参加政策宣传解释工作。参加一次活动（发放宣传资料、政策宣讲）记1分
+                                        7、带头参与社会治安综合治理，敢于正面直言，带头参加社区矛盾调解，敢于同违法行为作斗争。主动举报或能积极疏导制止身边违法违规行为的，一次记2分，全年累计不超过10分。
+                                    </pre>
+                                </div>
+                                <div class="tab-pane p-20" id="messages9" role="tabpanel"></div>
+                                <div class="tab-pane p-20" id="messages10" role="tabpanel">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/lib/jquery/jquery.min.js"></script>
+<script src="../js/lib/bootstrap/js/popper.min.js"></script>
+<script src="../js/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="../js/jquery.slimscroll.js"></script>
+<script src="../js/sidebarmenu.js"></script>
+<script src="../js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+<script src="../js/custom.min.js"></script>
+<script th:inline="javascript">
+    $(function () {
+        /*<![CDATA[*/
+        var detail = [[${orgDetail}]];
+        /*]]>*/
+        $("#messages9").html(detail);
+    });
+</script>
+</body>
+</html>

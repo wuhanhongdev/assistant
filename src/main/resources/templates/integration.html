@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<script th:inline="javascript">
+    $(function () {
+        /*<![CDATA[*/
+        var param = [[${param}]];
+        /*]]>*/
+        if(param != null && param.param != null && param.param[0] != null) {
+            var formData = param.param[0];
+            $("#memberId").val(formData);
+            Core.table("integrationList", "member/integration/list?memberId="+formData, [
+                {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
+                {title: 'id', field: 'id', visible: false},
+                {title: 'memberId', field: 'memberId', visible: false},
+                {title: '年度', field: 'yearNo', sortable: false, align: 'center'},
+                {title: '党员姓名', field: 'memberName', sortable: false, align: 'center'},
+                {title: '积分项目', field: 'content', sortable: false, align: 'center'},
+                {title: '分数', field: 'score', sortable: false, align: 'center'}
+            ]);
+        }
+
+        Core.click("button-modify", function () {
+            var select = $("#integrationList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            $("#integrationForm").fillValue(select[0]);
+        });
+
+        $("#integrationForm").validate({
+            submitHandler: function(form) {
+                jQuery(form).ajaxSubmit(function () {
+                    Core.toastrSuccess("操作成功");
+                    Core.tableRefresh("integrationList");
+                });
+            }
+        });
+
+        Core.click("button-delete", function () {
+            var select = $("#integrationList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            Core.alertWarning("删除操作员","是否要将改操作员删除?",function(){
+                Core.ajaxGet("member/integration/delete?integrationId="+select[0].id,function (result) {
+                    if(result != null && result.code == 1) {
+                        Core.toastrSuccess("删除成功");
+                        Core.tableRefresh("integrationList")
+                    }
+                });
+            });
+        });
+    });
+</script>
+</head>
+<body>
+<div class="text-left" style="margin-top: 15px;margin-left: 15px;">
+    <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;</button>
+    <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
+</div>
+<div class="row">
+    <div class="card card-outline-info col-lg-6">
+        <div class="card-header">
+            <h4 class="m-b-0 text-white">积分列表</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <table id="integrationList" class="table table-hover"></table>
+            </div>
+        </div>
+    </div>
+    <div class="card card-outline-info col-lg-5">
+        <div class="card-header">
+            <h4 class="m-b-0 text-white">积分信息</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="form-validation" style="margin-top: 15px;">
+                    <form class="form-valide form-horizontal" action="member/integration/saveOrUpdate" method="post" id="integrationForm">
+                        <input type="hidden" name="id" id="id">
+                        <input type="hidden" name="memberId" id="memberId" required>
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">年度</label>
+                                        <div class="col-md-9">
+                                            <select id="yearNo" name="yearNo" class="form-control custom-select" required>
+                                                <option>------选择年度------</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                                <option value="2030">2030</option>
+                                                <option value="2031">2031</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">积分分数</label>
+                                        <div class="col-md-9">
+                                            <input type="number" id="score" name="score" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-1">积分项目</label>
+                                        <div class="col-md-11">
+                                            <textarea class="form-control" name="content" style="vertical-align:top;resize: none;height: 100px;"  rows="6" placeholder="积分项目"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit"  class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

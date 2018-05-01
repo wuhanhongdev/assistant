@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.IntegrationMemberMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.IntegrationMember">
+        <result column="id" property="id"/>
+        <result column="member_id" property="memberId"/>
+        <result column="score" property="score"/>
+        <result column="content" property="content"/>
+        <result column="year_no" property="yearNo"/>
+    </resultMap>
+
+    <sql id="all_column">
+        id,
+        member_id,
+        score,
+        content,
+        year_no
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO t_integration_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
+            <if test="memberId != null"> member_id, </if>
+            <if test="score != null"> score, </if>
+            <if test="content != null"> content, </if>
+            <if test="yearNo != null"> year_no, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id}, </if>
+            <if test="memberId != null"> #{memberId}, </if>
+            <if test="score != null"> #{score}, </if>
+            <if test="content != null"> #{content}, </if>
+            <if test="yearNo != null"> #{yearNo}, </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        INSERT INTO t_integration_member(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{id},
+            #{memberId},
+            #{score},
+            #{content},
+            #{yearNo}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE t_integration_member
+        <set>
+            <if test="id != null"> id = #{id}, </if>
+            <if test="memberId != null"> member_id = #{memberId}, </if>
+            <if test="score != null"> score = #{score}, </if>
+            <if test="content != null"> content = #{content}, </if>
+            <if test="yearNo != null"> year_no = #{yearNo}, </if>
+        </set>
+         WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_integration_member where id = #{id}
+    </delete>
+
+    <select id="selectIntegrationMember" parameterType="long" resultType="com.power.assistant.model.IntegrationMember">
+        SELECT
+          i.id,
+          i.member_id as memberId,
+          i.content,
+          i.score,
+          m.name as memberName,
+          i.year_no as yearNo
+        FROM t_integration_member i
+        LEFT JOIN t_member m on m.id = i.member_id WHERE i.member_id = #{id}
+    </select>
+
+    <select id="selectIntegrationMembers" parameterType="string" resultType="com.power.assistant.model.IntegrationMember">
+        SELECT
+        i.id,
+        i.member_id as memberId,
+        i.content,
+        i.score,
+        m.name as memberName,
+        i.year_no as yearNo
+        FROM t_integration_member i
+        LEFT JOIN t_member m on m.id = i.member_id WHERE i.member_id in (#{memberId})
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.IntegrationMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.Integration">
+        <result column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="year_text" property="yearText"/>
+        <result column="month_text" property="monthText"/>
+    </resultMap>
+
+    <sql id="all_column">
+        id,
+        content,
+        year_text,
+        month_text
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO t_integration
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
+            <if test="content != null"> content, </if>
+            <if test="yearText != null"> year_text, </if>
+            <if test="monthText != null"> month_text, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id}, </if>
+            <if test="content != null"> #{content}, </if>
+            <if test="yearText != null"> #{yearText}, </if>
+            <if test="monthText != null"> #{monthText}, </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        INSERT INTO t_integration(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{id},
+            #{content},
+            #{yearText},
+            #{monthText}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE t_integration
+        <set>
+            <if test="content != null"> content = #{content}, </if>
+            <if test="yearText != null"> year_text = #{yearText}, </if>
+            <if test="monthText != null"> month_text = #{monthText} </if>
+        </set>
+         WHERE id = #{id}
+    </update>
+
+
+    <delete id="delete">
+        DELETE FROM t_integration where id = #{id}
+    </delete>
+</mapper>

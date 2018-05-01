@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="row">
+    <div class="text-left" style="margin-top: 15px;margin-left: 15px;">
+        <button type="button" id="button-add" class="btn btn-success m-b-10 m-l-5">&nbsp;&nbsp;添加&nbsp;&nbsp;</button>
+        <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;</button>
+        <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
+    </div>
+</div>
+<div class="row">
+    <div class="card card-outline-info col-lg-12">
+        <div class="card-header">
+            <h4 class="m-b-0 blue text-white">操作员列表</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <table id="userList" class="table table-hover"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function photoFormatter(value,row,index) {
+        if(value != null){
+            return "<img src='"+value+"' width='20' height='20'/>";
+        }
+    }
+    function loadUserList() {
+        Core.table("userList","system/user/list",[
+            {title: '全选',field: 'select',checkbox: true,width: 25,align: 'center',valign: 'middle'},
+            {title: 'id',field: 'id',visible: false},
+            {title: '人员姓名',field: 'name',sortable: false,align: 'center'},
+            {title: '性别',field: 'gender',sortable: false,align: 'center'},
+            {title: '工号',field: 'cardNo',sortable: false,align: 'center'},
+            {title: '身份证号',field: 'certNo',sortable: false,align: 'center'},
+            {title: '归属部门',field: 'orgName',sortable: false,align: 'center'},
+            {title: '登陆名',field: 'loginname',sortable: false,align: 'center'},
+            {title: '照片',field: 'photosrc',sortable: false,align: 'center',formatter:photoFormatter},
+            {title: '住宅详细地址',field: 'homeDetail',sortable: false,align: 'center'},
+            {title: '工作电话',field: 'phone',sortable: false,align: 'center'},
+            {title: '移动电话',field: 'mobile',sortable: false,align: 'center'},
+            {title: '状态',field: 'status',sortable: false,align: 'center',formatter:formatStatus}
+        ]);
+    }
+    $(function () {
+        loadUserList();
+        Core.click("button-add", function () {
+            Core.loadPage("jump?source=userInfo", "添加操作员");
+        });
+        Core.click("button-delete", function () {
+            var select = $("#userList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            Core.alertWarning("删除操作员","是否要将改操作员删除?",function(){
+                Core.ajaxGet("system/user/delete?userId="+select[0].id,function (result) {
+                    if(result != null && result.code == 1) {
+                        Core.toastrSuccess("删除成功");
+                        Core.tableRefresh("userList")
+                    }
+                });
+            });
+        });
+        Core.click("button-modify", function () {
+            var select = $("#userList").bootstrapTable('getSelections');
+            if(select.length != 1) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            var data = encodeURI(JSON.stringify(select[0]));
+            console.info(data);
+            Core.loadPage("jump?source=userInfo&param="+data, "修改操作员");
+        });
+    });
+</script>
+</body>
+</html>

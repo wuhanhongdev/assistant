@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.ActivityMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.Activity">
+        <result column="id" property="id"/>
+        <result column="period" property="period"/>
+        <result column="org_id" property="orgId"/>
+        <result column="content" property="content"/>
+        <result column="name" property="name"/>
+        <result column="year_no" property="yearNo"/>
+    </resultMap>
+
+    <sql id="all_column">
+        id,
+        period,
+        org_id,
+        content,
+        name,
+        year_no
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO t_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
+            <if test="period != null"> period, </if>
+            <if test="orgId != null"> org_id, </if>
+            <if test="content != null"> content, </if>
+            <if test="name != null"> name, </if>
+            <if test="yearNo != null"> year_no, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id}, </if>
+            <if test="period != null"> #{period}, </if>
+            <if test="orgId != null"> #{orgId}, </if>
+            <if test="content != null"> #{content}, </if>
+            <if test="name != null"> #{name}, </if>
+            <if test="yearNo != null"> #{yearNo}, </if>
+        </trim>
+    </insert>
+
+    <insert id="insertList">
+        INSERT INTO t_activity(
+        <include refid="all_column"/>
+        )VALUES
+        <foreach collection="pojos" item="pojo" index="index" separator=",">
+            (
+            #{id},
+            #{period},
+            #{orgId},
+            #{content},
+            #{name},
+            #{year_no}
+            )
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE t_activity
+        <set>
+            <if test="period != null"> period = #{period}, </if>
+            <if test="orgId != null"> org_id = #{orgId}, </if>
+            <if test="content != null"> content = #{content}, </if>
+            <if test="name != null"> name = #{name}, </if>
+            <if test="yearNo != null"> year_no = #{yearNo} </if>
+        </set>
+         WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_activity where id = #{id}
+    </delete>
+
+    <select id="selectActivityInfo" parameterType="map" resultType="com.power.assistant.model.Activity">
+        SELECT
+          a.id,
+          a.period,
+          a.org_id as orgId,
+          a.content,
+          a.name,
+          a.year_no as yearNo,
+          o.fullname as orgName
+        FROM t_activity a
+        LEFT JOIN t_org o on o.id = a.org_id
+        WHERE 1=1
+        <if test="orgId != null">
+            and a.org_id = #{orgId}
+        </if>
+        <if test="yearNo != null">
+            and a.year_no = #{yearNo}
+        </if>
+        <if test="period != null">
+            and a.period = #{period}
+        </if>
+    </select>
+</mapper>

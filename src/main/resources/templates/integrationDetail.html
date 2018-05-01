@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+    if (isInstance == 1) {
+        UE.getEditor('editor').destroy();
+    }
+    var ue = UE.getEditor('editor');
+    ue.addListener("ready", function () {
+        isInstance = 1;
+        Core.ajaxGet("member/contect/query",function (result) {
+            if (result != null && result.code == 1) {
+                orgInfo = result.data;
+                UE.getEditor('editor').execCommand('insertHtml', orgInfo.detail);
+            }
+        });
+        $("textarea").remove();
+    });
+    $(function () {
+        Core.click("button-detail-add",function () {
+            var content = UE.getEditor('editor').getAllHtml();
+            var data = {detail:content,id:orgId};
+            Core.ajaxPost("member/contect/saveOrUpdate",data,function (result) {
+                if(result != null && result.code == 1) {
+                    alert("编辑成功");
+                }
+            });
+        });
+    });
+</script>
+</head>
+<body>
+<div><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></div>
+<div class="row">
+    <div class="text-left" style="margin-top: 15px;margin-left: 15px;">
+        <button type="button" id="button-detail-add" class="btn btn-success m-b-10 m-l-5">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+    </div>
+</div>
+</body>
+</html>

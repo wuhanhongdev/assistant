@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.power.assistant.mapper.UserMapper">
+
+    <resultMap id="AllColumnMap" type="com.power.assistant.model.User">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="card_no" property="cardNo"/>
+        <result column="cert_no" property="certNo"/>
+        <result column="loginname" property="loginname"/>
+        <result column="password" property="password"/>
+        <result column="gender" property="gender"/>
+        <result column="photosrc" property="photosrc"/>
+        <result column="home_detail" property="homeDetail"/>
+        <result column="phone" property="phone"/>
+        <result column="mobile" property="mobile"/>
+    </resultMap>
+
+    <select id="userLogin" parameterType="map" resultMap="AllColumnMap">
+        SELECT * FROM t_user
+        WHERE
+        loginname = #{username} and password = #{pwd}
+    </select>
+
+    <select id="selectUserInfo" parameterType="map" resultType="com.power.assistant.model.UserVo">
+        SELECT
+          u.id,
+          u.org_id as orgId,
+          o.fullname as orgName,
+          u.name,
+          u.card_no as cardNo,
+          u.cert_no as certNo,
+          u.loginname,
+          u.gender,
+          u.photosrc,
+          u.home_detail as homeDetail,
+          u.phone,
+          u.mobile,
+          u.status
+        from t_user u
+        LEFT JOIN t_org o ON o.id = u.org_id
+        WHERE u.status = 1
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null"> name, </if>
+            <if test="cardNo != null"> card_no, </if>
+            <if test="certNo != null"> cert_no, </if>
+            <if test="loginname != null"> loginname, </if>
+            <if test="password != null"> password, </if>
+            <if test="gender != null"> gender, </if>
+            <if test="photosrc != null"> photosrc, </if>
+            <if test="homeDetail != null"> home_detail, </if>
+            <if test="phone != null"> phone, </if>
+            <if test="mobile != null"> mobile, </if>
+            <if test="orgId != null"> org_id, </if>
+            <if test="status != null"> status, </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null"> #{name}, </if>
+            <if test="cardNo != null"> #{cardNo}, </if>
+            <if test="certNo != null"> #{certNo}, </if>
+            <if test="loginname != null"> #{loginname}, </if>
+            <if test="password != null"> #{password}, </if>
+            <if test="gender != null"> #{gender}, </if>
+            <if test="photosrc != null"> #{photosrc}, </if>
+            <if test="homeDetail != null"> #{homeDetail}, </if>
+            <if test="phone != null"> #{phone}, </if>
+            <if test="mobile != null"> #{mobile}, </if>
+            <if test="orgId != null"> #{orgId}, </if>
+            <if test="status != null"> #{status}, </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM t_user where id = #{userId}
+    </delete>
+
+    <update id="updateById">
+        UPDATE t_user
+        <set>
+            <if test="name != null"> name = #{name}, </if>
+            <if test="cardNo != null"> card_no = #{cardNo}, </if>
+            <if test="certNo != null"> cert_no = #{certNo}, </if>
+            <if test="loginname != null"> loginname = #{loginname}, </if>
+            <if test="password != null"> password = #{password}, </if>
+            <if test="gender != null"> gender = #{gender}, </if>
+            <if test="photosrc != null"> photosrc = #{photosrc}, </if>
+            <if test="homeDetail != null"> home_detail = #{homeDetail}, </if>
+            <if test="phone != null"> phone = #{phone}, </if>
+            <if test="mobile != null"> mobile = #{mobile}, </if>
+            <if test="orgId != null"> org_id = #{orgId}, </if>
+            <if test="status != null"> status = #{status} </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

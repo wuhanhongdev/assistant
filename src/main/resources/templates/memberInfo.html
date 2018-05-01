@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<script th:inline="javascript">
+    function isUpdate() {
+        /*<![CDATA[*/
+        var param = [[${param}]];
+        /*]]>*/
+        if(param != null && param.param != null && param.param[0] != null) {
+            var formData = JSON.parse(decodeURI(param.param[0]));
+            console.info(formData);
+            $("#memberFormSave").fillValue(formData);
+            $("#btn-save").addClass("hide");
+            $("#memberFormUpdate").fillValue(formData);
+
+            $("#updateCard").removeClass("hide");
+        } else {
+            $("#btn-update").addClass("hide");
+        }
+    }
+    function modifyBorder(m) {
+        $(m).css("border-color","#ff0d20");
+    }
+    $(function () {
+        Core.click("orgNameUpdate",function () {
+            $("#orgTreeDivUpdate").css("display","block");
+        });
+        Core.click("orgNameSave",function () {
+            $("#orgTreeSaveDiv").css("display","block");
+        });
+        isUpdate();
+        Core.ajaxGet("system/org/list", function (result) {
+            if (result != null && result.code == 1) {
+                Core.initTree("orgTreeSave", Core.radioSetting("fullname", function (event, treeId, treeNode) {
+                    $("#orgIdSave").val(treeNode.id);
+                    $("#orgNameSave").val(treeNode.fullname);
+
+                    $("#orgTreeSaveDiv").css("display","none");
+                }), result.data);
+                Core.initTree("orgTreeUpdate", Core.radioSetting("fullname", function (event, treeId, treeNode) {
+                    $("#orgIdUpdate").val(treeNode.id);
+                    $("#orgNameUpdate").val(treeNode.fullname);
+                    $("#orgTreeDivUpdate").css("display","none");
+                }), result.data);
+            }
+        });
+        $("#memberFormSave").validate({
+            submitHandler: function(form) {
+                jQuery(form).ajaxSubmit(function () {
+                    Core.toastrSuccess("操作成功");
+                    Core.loadPage("jump?source=partyMembers","党员信息管理");
+                });
+            }
+        });
+        $("#memberFormUpdate").validate({
+            submitHandler: function(form) {
+                jQuery(form).ajaxSubmit(function () {
+                    Core.toastrSuccess("操作成功");
+                    Core.loadPage("jump?source=partyMembers","党员信息管理");
+                });
+            }
+        });
+    });
+</script>
+<body>
+<div class="row">
+    <div class="card card-outline-info col-lg-6">
+        <div class="card-body">
+            <div class="card-content">
+                <div class="form-validation" style="margin-top: 15px;">
+                    <form class="form-valide form-horizontal" action="member/party/saveOrUpdate" method="post" id="memberFormSave">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="id" id="id">
+                                        <label class="control-label text-right col-md-3">人员姓名</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="name" name="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">出生年月</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="birthday" name="birthday" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">归属机构</label>
+                                        <div class="col-md-9">
+                                            <input type="hidden" name="orgId" id="orgIdSave">
+                                            <input type="text" id="orgNameSave" readonly name="orgName" class="form-control" required>
+                                            <div id="orgTreeSaveDiv" style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
+                                                <ul id="orgTreeSave" class="ztree"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">学历</label>
+                                        <div class="col-md-9">
+                                            <select name="degree" class="form-control custom-select" required>
+                                                <option value="初中">初中</option>
+                                                <option value="高中">高中</option>
+                                                <option value="专科">专科</option>
+                                                <option value="本科">本科</option>
+                                                <option value="硕士">硕士</option>
+                                                <option value="博士">博士</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">入党时间</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="inTime" name="inTime" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">是否书记</label>
+                                        <div class="col-md-9">
+                                            <select name="isManager" class="form-control custom-select" required>
+                                                <option value="1">是</option>
+                                                <option value="0">否</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">星级支书</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="starManager" name="starManager" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">评议等级</label>
+                                        <div class="col-md-9">
+                                            <select name="starMember" class="form-control custom-select" required>
+                                                <option value="优秀">优秀</option>
+                                                <option value="良好">良好</option>
+                                                <option value="中等">中等</option>
+                                                <option value="一般">一般</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">党员四创</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="memberCreate" name="memberCreate" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">争星承诺</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="promise" name="promise" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">党员照片</label>
+                                        <div class="col-md-9">
+                                            <input type="file" id="photo" name="photo" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" id="btn-save" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-outline-info col-lg-5 hide" id="updateCard">
+        <div class="card-body">
+            <div class="card-content">
+                <form class="form-valide form-horizontal" action="member/party/saveOrUpdate" method="post" id="memberFormUpdate">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <input type="hidden" name="id">
+                                    <label class="control-label text-right col-md-3">人员姓名</label>
+                                    <div class="col-md-9">
+                                        <input type="text" name="name" onchange="modifyBorder(this)" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">出生年月</label>
+                                    <div class="col-md-9">
+                                        <input type="text" name="birthday" onchange="modifyBorder(this)" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">归属机构</label>
+                                    <div class="col-md-9">
+                                        <input type="hidden" name="orgId" id="orgIdUpdate">
+                                        <input type="text" name="orgName" onchange="modifyBorder(this)" id="orgNameUpdate" readonly class="form-control" required>
+                                        <div id="orgTreeDivUpdate" style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
+                                            <ul id="orgTreeUpdate" class="ztree"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">学历</label>
+                                    <div class="col-md-9">
+                                        <select name="degree" onchange="modifyBorder(this)" class="form-control custom-select" required>
+                                            <option value="初中">初中</option>
+                                            <option value="高中">高中</option>
+                                            <option value="专科">专科</option>
+                                            <option value="本科">本科</option>
+                                            <option value="硕士">硕士</option>
+                                            <option value="博士">博士</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">入党时间</label>
+                                    <div class="col-md-9">
+                                        <input type="text" onchange="modifyBorder(this)" name="inTime" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">是否书记</label>
+                                    <div class="col-md-9">
+                                        <select name="isManager" onchange="modifyBorder(this)" class="form-control custom-select" required>
+                                            <option value="1">是</option>
+                                            <option value="0">否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">星级支书</label>
+                                    <div class="col-md-9">
+                                        <input type="text" onchange="modifyBorder(this)" name="starManager" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">评议等级</label>
+                                    <div class="col-md-9">
+                                        <select name="starMember" onchange="modifyBorder(this)" class="form-control custom-select" required>
+                                            <option value="优秀">优秀</option>
+                                            <option value="良好">良好</option>
+                                            <option value="中等">中等</option>
+                                            <option value="一般">一般</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">党员四创</label>
+                                    <div class="col-md-9">
+                                        <input type="text" name="memberCreate" onchange="modifyBorder(this)" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">争星承诺</label>
+                                    <div class="col-md-9">
+                                        <input type="text" name="promise" onchange="modifyBorder(this)" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">党员照片</label>
+                                    <div class="col-md-9">
+                                        <input type="file" name="photo" onchange="modifyBorder(this)" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" id="btn-update" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
