@@ -1,11 +1,11 @@
 web:
-  upload-path: /Users/jaydenwu/Documents/Home/upload/ueditor/ #此处最后需带上/否则无法识别
-  qr-code-path: /Users/jaydenwu/Documents/Home/upload/QRCode/ #此处最后需带上/否则无法识别
-  profile: /Users/jaydenwu/Documents/Home/upload/profile/ #此处最后需带上/否则无法识别
+  upload-path: ${app.upload.ueditor} #此处最后需带上/否则无法识别
+  qr-code-path: ${app.upload.QRCode} #此处最后需带上/否则无法识别
+  profile: ${app.upload.profile} #此处最后需带上/否则无法识别
 server:
-  port: 8999 #程序访问端口号
+  port: ${app.port} #程序访问端口号
   servlet:
-    context-path: /assistant #程序访问上下文路径
+    context-path: ${app.contentpath} #程序访问上下文路径
 spring:
   resources:
     static-locations: file:${web.upload-path},file:${web.qr-code-path},file:${web.profile},classpath:/static/,classpath:/templates/
@@ -21,7 +21,13 @@ spring:
     suffix: .html
 config:
   ueditor:
-    serverPath: http://192.168.1.102:8999/assistant/ #此处最后需带上/否则无法识别
-    web-qr-code-path: http://192.168.1.102:8999/assistant/member/info?memberId= #二维码地址
+    serverPath: ${app.serverPath} #此处最后需带上/否则无法识别
+    web-qr-code-path: ${app.qrcodepath} #二维码地址
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
+database:
+  driver: ${app.driverClassName}
+  url: ${app.jdbcUrl}
+  username: ${app.username}
+  password: ${app.password}
+

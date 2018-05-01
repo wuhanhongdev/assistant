@@ -1,0 +1,1 @@
+INSERT INTO assistant.t_user (id, name, card_no, cert_no, loginname, password, gender, photosrc, home_detail, phone, mobile, org_id, status, can_delete) VALUES (4, '乔峰', 'no001', '0987654321', 'qiaofeng', 'c33367701511b4f6020ec61ded352059', 1, 'http://localhost:8999/assistant/eda2f9b26f1d4f08b93bf4105cbbe376.jpg', '丐帮总舵', '012-213123123', '15678900987', 2, 1, null);

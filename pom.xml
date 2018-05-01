@@ -5,8 +5,8 @@
 
 	<groupId>com.power.assistant</groupId>
 	<artifactId>assistant</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
 
 	<name>assistant</name>
 	<description>assistant</description>

@@ -158,4 +158,16 @@
             and m.id = #{memberId}
         </if>
     </select>
+
+    <insert id="insertContent" parameterType="string">
+        INSERT INTO t_content(content) VALUES (#{content})
+    </insert>
+
+    <insert id="updateContent" parameterType="string">
+        UPDATE t_content SET content = #{content} where id=1
+    </insert>
+
+    <select id="selectContent" resultType="string">
+        SELECT content FROM t_content where id=1
+    </select>
 </mapper>

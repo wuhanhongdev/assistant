@@ -6,12 +6,14 @@
         UE.getEditor('editor').destroy();
     }
     var ue = UE.getEditor('editor');
+    var id = null;
     ue.addListener("ready", function () {
         isInstance = 1;
-        Core.ajaxGet("member/contect/query",function (result) {
+        Core.ajaxGet("member/content/query",function (result) {
             if (result != null && result.code == 1) {
                 orgInfo = result.data;
-                UE.getEditor('editor').execCommand('insertHtml', orgInfo.detail);
+                UE.getEditor('editor').execCommand('insertHtml', orgInfo);
+                id = 1;
             }
         });
         $("textarea").remove();
@@ -19,9 +21,12 @@
     $(function () {
         Core.click("button-detail-add",function () {
             var content = UE.getEditor('editor').getAllHtml();
-            var data = {detail:content,id:orgId};
-            Core.ajaxPost("member/contect/saveOrUpdate",data,function (result) {
+            var data = {content:content,id:id};
+            Core.ajaxPost("member/content/saveOrUpdate",data,function (result) {
                 if(result != null && result.code == 1) {
+                    if(id == null) {
+                        id = 1;
+                    }
                     alert("编辑成功");
                 }
             });
@@ -30,6 +35,7 @@
 </script>
 </head>
 <body>
+<input type="hidden" id="id" name="id">
 <div><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></div>
 <div class="row">
     <div class="text-left" style="margin-top: 15px;margin-left: 15px;">

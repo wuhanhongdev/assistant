@@ -1,0 +1,2 @@
+INSERT INTO assistant.t_activity (id, period, org_id, content, name, year_no) VALUES (1, '1', 2, null, '张三丰', '2015');
+INSERT INTO assistant.t_activity (id, period, org_id, content, name, year_no) VALUES (2, '2', 3, '杀死张无忌，合练玉女心经,asd', '围攻光明顶', '2016');
