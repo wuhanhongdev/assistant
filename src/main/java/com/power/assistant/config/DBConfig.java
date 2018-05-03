@@ -7,6 +7,7 @@ import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -22,18 +23,24 @@ import java.util.Properties;
 @Configuration
 public class DBConfig {
 
+    @Value("${database.driver}")
+    private String driver;
+    @Value("${database.url}")
+    private String url;
+    @Value("${database.username}")
+    private String username;
+    @Value("${database.password}")
+    private String password;
+
     @Bean
     public DataSource dataSource(){
-        HikariDataSource mysqlDS = null;
-        try {
-            Resource resource = new ClassPathResource("jdbc.properties");
-            Properties props = PropertiesLoaderUtils.loadProperties(resource);
-            HikariConfig config = new HikariConfig(props) {
-            };
-            mysqlDS = new HikariDataSource(config);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Properties props = new Properties();
+        props.put("driverClassName",driver);
+        props.put("jdbcUrl",url);
+        props.put("username",username);
+        props.put("password",password);
+        HikariConfig config = new HikariConfig(props) {};
+        HikariDataSource mysqlDS = new HikariDataSource(config);
         return mysqlDS;
     }
 

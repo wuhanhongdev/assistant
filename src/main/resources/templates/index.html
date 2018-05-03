@@ -36,7 +36,7 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="javascript:void(0)">
                     <b><img src="images/logo.png" alt="homepage" class="dark-logo"/></b>
-                    <span><img src="images/logo-text.png" alt="homepage" class="dark-logo"/></span>
+                    <span>管理平台</span>
                 </a>
             </div>
             <div class="navbar-collapse">
@@ -70,11 +70,11 @@
     <div class="page-wrapper">
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h3 class="text-primary" id="pageTitle">Dashboard</h3></div>
+                <h3 class="text-primary" id="pageTitle">管控台</h3></div>
             <div class="col-md-7 align-self-center">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active" id="pageName">Dashboard</li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">首页</a></li>
+                    <li class="breadcrumb-item active" id="pageName">管控台</li>
                 </ol>
             </div>
         </div>
@@ -133,6 +133,22 @@
             return "启用";
         } else {
             return "禁用";
+        }
+    };
+
+    function formatGender(value,row,index) {
+        if(value == 1) {
+            return "男";
+        } else if(value == 2){
+            return "女";
+        } else{
+            return "未知";
+        }
+    };
+
+    function photoFormatter(value,row,index) {
+        if(value != null){
+            return "<img src='"+value+"' width='20' height='20'/>";
         }
     };
     $(function () {

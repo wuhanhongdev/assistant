@@ -40,6 +40,9 @@
         from t_user u
         LEFT JOIN t_org o ON o.id = u.org_id
         WHERE u.status = 1
+        <if test="orgId != null">
+            and u.org_id = #{orgId}
+        </if>
     </select>
 
     <insert id="insertUser">

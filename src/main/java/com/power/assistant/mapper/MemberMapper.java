@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.power.assistant.model.Member;
 
 public interface MemberMapper {
@@ -17,5 +19,11 @@ public interface MemberMapper {
 
     int delete(Long id);
 
-    List<MemberVo> selectMemberInfo(HashMap<Object, Object> objectObjectHashMap);
+    List<MemberVo> selectMemberInfo(Map<String, Object> objectObjectHashMap);
+
+    int insertContent(String content);
+
+    int updateContent(String content);
+
+    String selectContent();
 }

@@ -25,7 +25,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">身份证号</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="certNo" name="certNo" class="form-control" required>
+                                            <input type="text" id="certNo" name="certNo" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">登陆密码</label>
                                         <div class="col-md-9">
-                                            <input type="password" id="password" name="password" class="form-control form-control-danger">
+                                            <input type="password" id="password" name="password" class="form-control form-control-danger" required>
                                         </div>
                                     </div>
                                 </div>
@@ -51,22 +51,22 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">工号</label>
-                                        <div class="col-md-9">
-                                            <input type="text" id="cardNo" name="cardNo" class="form-control form-control-danger" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
                                         <label class="control-label text-right col-md-3">性别</label>
                                         <div class="col-md-9">
-                                            <select id="gender" name="gender" class="form-control custom-select" required>
+                                            <select id="gender" name="gender" class="form-control custom-select">
                                                 <option>--选择性别--</option>
                                                 <option value="1">男</option>
                                                 <option value="2">女</option>
                                                 <option value="0">未知</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">照片</label>
+                                        <div class="col-md-9">
+                                            <input type="file" id="photo" name="photo" class="form-control form-control-danger">
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">居住地址</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="homeDetail" name="homeDetail" class="form-control form-control-danger" required>
+                                            <input type="text" id="homeDetail" name="homeDetail" class="form-control form-control-danger">
                                         </div>
                                     </div>
                                 </div>
@@ -106,29 +106,17 @@
                                     <div class="form-group row">
                                         <label class="control-label text-right col-md-3">移动电话</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="mobile" name="mobile" class="form-control form-control-danger" required>
+                                            <input type="text" id="mobile" name="mobile" class="form-control form-control-danger">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">状态</label>
-                                        <div class="col-md-9">
-                                            <select id="status" name="status" class="form-control custom-select" required>
-                                                <option>--选择状态--</option>
-                                                <option value="1">启用</option>
-                                                <option value="0">禁用</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">照片</label>
-                                        <div class="col-md-9">
-                                            <input type="file" id="photo" name="photo" class="form-control form-control-danger">
+                                    <div class="form-group row hide" id="photoDiv">
+                                        <label class="control-label text-right col-md-3">已选照片</label>
+                                        <div class="col-md-9" id="choosedPhoto">
+
                                         </div>
                                     </div>
                                 </div>
@@ -165,8 +153,13 @@
             console.info(param.param[0]);
             console.info(Base64.decode(param.param[0]));
             var formData = JSON.parse(decodeURI(param.param[0]));
-            console.info(formData);
-            $("#userForm").fillValue(formData)
+
+            var img = "<img src='"+formData.photosrc+"'  width='100px' height='100px' />";
+            $("#choosedPhoto").empty();
+            $("#choosedPhoto").html(img);
+            $("#photoDiv").removeClass("hide");
+            $("#userForm").fillValue(formData);
+            $("#password").removeAttr("required");
         }
     }
 $(function () {

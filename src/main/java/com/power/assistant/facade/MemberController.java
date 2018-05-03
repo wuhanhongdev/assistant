@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -62,10 +63,13 @@ public class MemberController {
                 detail = org.getDetail();
             }
         }
+        String content = (String) memberService.contentQuery().getData();
 
         modelAndView.getModelMap()
                 .addAttribute("member",member)
                 .addAttribute("integrations",pageModel.getRes())
+                .addAttribute("activities",memberService.activityQuery(member.getOrgId()))
+                .addAttribute("content",content)
                 .addAttribute("orgDetail",detail);
         return modelAndView;
     }
@@ -153,6 +157,27 @@ public class MemberController {
             return DataModel.ok(memberService.saveOrUpdateIntegration(integrationMember));
         } catch (Exception e) {
             e.printStackTrace();
+            return DataModel.error(e.getMessage());
+        }
+    }
+
+    @Authentication
+    @PostMapping("/content/saveOrUpdate")
+    public DataModel saveOrUpdateContent(String content,Long id) {
+        try {
+            return DataModel.ok(memberService.saveOrUpdateContent(content,id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DataModel.error(e.getMessage());
+        }
+    }
+
+    @Authentication
+    @GetMapping("/content/query")
+    public DataModel contentQuery(){
+        try {
+            return memberService.contentQuery();
+        } catch (Exception e) {
             return DataModel.error(e.getMessage());
         }
     }

@@ -2,6 +2,7 @@ package com.power.assistant.core.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.power.assistant.base.DataModel;
 import com.power.assistant.base.PageModel;
 import com.power.assistant.base.PageParam;
 import com.power.assistant.mapper.ActivityMapper;
@@ -13,6 +14,7 @@ import com.power.assistant.model.IntegrationMember;
 import com.power.assistant.model.Member;
 import com.power.assistant.model.MemberVo;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import org.apache.xmlbeans.impl.jam.mutable.MAnnotatedElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -82,6 +84,13 @@ public class MemberService {
         return PageModel.ok(pageInfo.getTotal(),pageInfo.getList());
     }
 
+    public List<Activity> activityQuery(Long id){
+        HashMap map = new HashMap();
+        map.put("orgId",id);
+
+        return activityMapper.selectActivityInfo(map);
+    }
+
 
     public int saveOrUpdateActivity(Activity activity) {
         if (activity.getId() == null) {
@@ -143,5 +152,17 @@ public class MemberService {
 
     public List<IntegrationMember> selectIntegrationMember(String memberIds) {
         return integrationMemberMapper.selectIntegrationMembers(memberIds);
+    }
+
+    public int saveOrUpdateContent(String content,Long id) {
+        if (id == null) {
+            return memberMapper.insertContent(content);
+        } else {
+            return memberMapper.updateContent(content);
+        }
+    }
+
+    public DataModel contentQuery() {
+        return DataModel.ok(memberMapper.selectContent());
     }
 }

@@ -21,22 +21,18 @@
     </div>
 </div>
 <script>
-    function photoFormatter(value,row,index) {
-        if(value != null){
-            return "<img src='"+value+"' width='20' height='20'/>";
-        }
-    }
+
     function loadUserList() {
         Core.table("userList","system/user/list",[
             {title: '全选',field: 'select',checkbox: true,width: 25,align: 'center',valign: 'middle'},
             {title: 'id',field: 'id',visible: false},
             {title: '人员姓名',field: 'name',sortable: false,align: 'center'},
-            {title: '性别',field: 'gender',sortable: false,align: 'center'},
-            {title: '工号',field: 'cardNo',sortable: false,align: 'center'},
+            {title: '性别',field: 'gender',sortable: false,align: 'center',formatter:formatGender},
+            //{title: '工号',field: 'cardNo',sortable: false,align: 'center'},
             {title: '身份证号',field: 'certNo',sortable: false,align: 'center'},
-            {title: '归属部门',field: 'orgName',sortable: false,align: 'center'},
+            {title: '归属机构',field: 'orgName',sortable: false,align: 'center'},
             {title: '登陆名',field: 'loginname',sortable: false,align: 'center'},
-            {title: '照片',field: 'photosrc',sortable: false,align: 'center',formatter:photoFormatter},
+            //{title: '照片',field: 'photosrc',sortable: false,align: 'center',formatter:photoFormatter},
             {title: '住宅详细地址',field: 'homeDetail',sortable: false,align: 'center'},
             {title: '工作电话',field: 'phone',sortable: false,align: 'center'},
             {title: '移动电话',field: 'mobile',sortable: false,align: 'center'},
