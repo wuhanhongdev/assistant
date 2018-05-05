@@ -10,7 +10,50 @@
         <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;</button>
         <button type="button" id="button-integration" class="btn btn-warning m-b-10 m-l-5">设置积分信息</button>
         <button type="button" id="button-export" class="btn btn-warning m-b-10 m-l-5">导出积分信息</button>
+        <button type="button" id="button-party" class="btn btn-warning m-b-10 m-l-5">设置党员四创</button>
         <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
+    </div>
+</div>
+<div class="row">
+    <div class="card card-outline-info col-lg-12">
+        <div class="card-body">
+            <div class="card-content">
+                <div class="form-validation">
+                    <form class="form-valide form-horizontal" method="post" id="activityForm">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="orgId" id="orgId">
+                                        <label class="control-label text-right col-md-3">归属机构</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="orgName" name="orgName" readonly
+                                                   onclick="showOrgTree()" class="form-control form-control-danger"
+                                                   required>
+                                            <div id="orgTreeDiv"
+                                                 style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
+                                                <ul id="orgTree" class="ztree"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">姓名</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="name" name="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" id="button-search" class="btn btn-warning m-b-10 m-l-5">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -24,12 +67,45 @@
 </div>
 </body>
 <script>
+    function showOrgTree() {
+        $("#orgTreeDiv").css("display","block");
+    }
     function formatPhoto(value,row,index) {
         if(value != null){
             return "<img src='"+value+"' width='40' height='40'/>";
         }
     }
+    function formatManager(value,row,index) {
+        if(value != 1){
+            return "否";
+        } else {
+            return "是";
+        }
+    }
+    function formatStar(value,row,index) {
+        if(value != null) {
+            var html = "<select id='select' class='rateStar' name='rating' autocomplete='off'>";
+            for (var i=1;i<=value;i++) {
+                html += "<option value='"+i+"'>"+i+"</option>";
+            }
+            html += "</select>"
+            return html;
+        }
+    }
     $(function () {
+        Core.ajaxGet("system/org/list2", function (result) {
+            if (result != null && result.code == 1) {
+                Core.initTree("orgTree", Core.radioSetting("fullname", function (event, treeId, treeNode) {
+                    $("#orgId").val(treeNode.id);
+                    $("#orgName").val(treeNode.fullname);
+
+                    $("#orgTreeDiv").css("display", "none");
+                }), result.data);
+            }
+        });
+        Core.click("button-search",function () {
+            $("#memberList").bootstrapTable('refresh', {url: 'member/party/list?orgId='+$("#orgId").val()+"&name="+$("#name").val()});
+        });
         Core.table("memberList", "member/party/list", [
             {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
             {title: 'id', field: 'id', visible: false},
@@ -39,18 +115,19 @@
             {title: '出生年月', field: 'birthday', sortable: false, align: 'center'},
             {title: '学历', field: 'degree', sortable: false, align: 'center'},
             {title: '入党时间', field: 'inTime', sortable: false, align: 'center'},
-            {title: '是否书记', field: 'isManager', sortable: false, align: 'center', formatter: formatStatus},
+            {title: '是否书记', field: 'isManager', sortable: false, align: 'center', formatter: formatManager},
+            {title: '星级支书', field: 'starManager', sortable: false, align: 'center'},
             {title: '当前积分', field: 'integration', sortable: false, align: 'center'},
             {title: '评议等级', field: 'level', sortable: false, align: 'center'},
-            {title: '星级党员', field: 'starMember', sortable: false, align: 'center'},
-            {title: '星级支书', field: 'starManager', sortable: false, align: 'center'},
-            {title: '党员四创', field: 'memberCreate', sortable: false, align: 'center'},
+            {title: '星级', field: 'starMember', sortable: false, align: 'center'},
+            {title: '党员四创', field: 'memberCreate', visible: false, sortable: false, align: 'center'},
             {title: '争星承诺', field: 'promise', sortable: false, align: 'center'},
             {title: '照片', field: 'photosrc', sortable: false, align: 'center', formatter: formatPhoto},
             {title: '二维码', field: 'qrcode', sortable: false, align: 'center', formatter: formatPhoto}
         ]);
 
         Core.click("button-add",function () {
+            member = null;
             Core.loadPage("jump?source=memberInfo","党员信息添加");
         });
         Core.click("button-modify", function () {
@@ -59,8 +136,9 @@
                 Core.toastrError("数据选择错误");
                 return;
             }
-            var data = encodeURI(JSON.stringify(select[0]));
-            Core.loadPage("jump?source=memberInfo&param="+data, "修改党员信息");
+            member = select[0];
+
+            Core.loadPage("jump?source=memberInfo", "修改党员信息");
         });
         Core.click("button-delete", function () {
             var select = $("#memberList").bootstrapTable('getSelections');
@@ -68,7 +146,7 @@
                 Core.toastrError("数据选择错误");
                 return;
             }
-            Core.alertWarning("删除操作员","是否要将改操作员删除?",function(){
+            Core.alertWarning("删除党员信息","是否要将党员信息删除?",function(){
                 Core.ajaxGet("member/party/delete?userId="+select[0].id,function (result) {
                     if(result != null && result.code == 1) {
                         Core.toastrSuccess("删除成功");
@@ -83,8 +161,8 @@
                 Core.toastrError("数据选择错误");
                 return;
             }
-
-            Core.loadPage("jump?source=integration&param="+select[0].id);
+            member = select[0];
+            Core.loadPage("jump?source=integration","设置积分信息");
         });
 
         Core.click("button-export",function(){
@@ -104,6 +182,17 @@
             }
 
             window.open("member/integration/export?memberIds="+memberId);
+        });
+
+        Core.click("button-party",function () {
+            var select = $("#memberList").bootstrapTable('getSelections');
+            if(select.length == 0) {
+                Core.toastrError("数据选择错误");
+                return;
+            }
+            member = select[0];
+
+            Core.loadPage("jump?source=partyDetail");
         });
     });
 </script>

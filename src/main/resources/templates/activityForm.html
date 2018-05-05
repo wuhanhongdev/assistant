@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if (isInstance == 1) {
+            UE.getEditor('editor').destroy();
+        }
+        var ue = UE.getEditor('editor');
+        ue.addListener("ready", function () {
+            isInstance = 1;
+            if (activity != null) {
+                console.info(activity.content);
+                $("#activityForm").fillValue(activity);
+                UE.getEditor('editor').execCommand('insertHtml', activity.content);
+            }
+        });
+        $(function () {
+            var today = new Date();
+            var year = today.getFullYear();
+            $("#yearNo").val(year);
+            Core.ajaxGet("system/org/list", function (result) {
+                if (result != null && result.code == 1) {
+                    Core.initTree("orgTree", Core.radioSetting("fullname", function (event, treeId, treeNode) {
+                        $("#orgId").val(treeNode.id);
+                        $("#orgName").val(treeNode.fullname);
+
+                        $("#orgTreeDiv").css("display", "none");
+                    }), result.data);
+                }
+            });
+            Core.click("btn-add-activity", function () {
+                var name = $("#name").val();
+                var orgId = $("#orgId").val();
+                var yearNo = $("#yearNo").val();
+                var orgName = $("#orgName").val();
+                var period = $("#period").val();
+                var content = UE.getEditor('editor').getAllHtml();
+                if (name == null || name == '') {
+                    Core.toastrWarning("活动名称不能为空");
+                    return;
+                }
+                if (orgId == null || orgId == '') {
+                    Core.toastrWarning("归属机构不能为空");
+                    return;
+                }
+                if (orgName == null || orgName == '') {
+                    Core.toastrWarning("归属机构不能为空");
+                    return;
+                }
+                if (yearNo == null || yearNo == '') {
+                    Core.toastrWarning("年度不能为空");
+                    return;
+                }
+                if (period == null || period == '') {
+                    Core.toastrWarning("月度不能为空");
+                    return;
+                }
+                if (content == null || content == '') {
+                    Core.toastrWarning("活动内容不能为空");
+                    return;
+                }
+                var data = {id:$("#id").val(),name: name, orgId: orgId, yearNo: yearNo, period: period, content: content};
+                Core.ajaxPost("member/activity/saveOrUpdate", data, function (result) {
+                    if (result != null && result.code == 1) {
+                        Core.toastrSuccess("操作成功");
+                        UE.getEditor('editor').destroy();
+                        isInstance = 0;
+                        activity = null;
+                        Core.loadPage("jump?source=activity", "主题活动管理");
+                    } else {
+                        Core.toastrError(result.message);
+                    }
+                });
+            });
+            Core.click("btn-add-back", function () {
+                UE.getEditor('editor').destroy();
+                isInstance = 0;
+                activity = null;
+                Core.loadPage("jump?source=activity", "主题活动管理");
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="row">
+    <div class="card card-outline-info col-lg-12" id="contentPanel">
+        <div class="card-header">
+            <h4 class="m-b-0 text-white">活动信息</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <div class="form-validation" style="margin-top: 15px;">
+                    <form class="form-valide form-horizontal" method="post" id="activityForm">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="id" id="id">
+                                        <label class="control-label text-right col-md-3">活动名称</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="name" name="name" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="orgId" id="orgId">
+                                        <label class="control-label text-right col-md-3">归属机构</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="orgName" name="orgName" readonly
+                                                   onclick="showOrgTree()" class="form-control form-control-danger"
+                                                   required>
+                                            <div id="orgTreeDiv"
+                                                 style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
+                                                <ul id="orgTree" class="ztree"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">年度</label>
+                                        <div class="col-md-9">
+                                            <select id="yearNo" name="yearNo" class="form-control custom-select"
+                                                    required>
+                                                <option value="">--选择年度--</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                                <option value="2030">2030</option>
+                                                <option value="2031">2031</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">月度</label>
+                                        <div class="col-md-9">
+                                            <select id="period" name="period" class="form-control custom-select"
+                                                    required>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-1">活动内容</label>
+                                    <div class="col-md-11">
+                                        <script id="editor" type="text/plain" style="width:800px;height:250px;"></script></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="button" id="btn-add-activity" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                            <button type="button" id="btn-add-back" class="btn btn-warning">&nbsp;&nbsp;返回&nbsp;&nbsp;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

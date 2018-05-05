@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class UEditorController {
 
-    @Value("${config.ueditor.serverPath}")
+    @Value("${config.ueditor.serverPath.ueditor}")
     private String serverPath;
     @Value("${web.upload-path}")
     private String uploadPath;

@@ -31,6 +31,12 @@
         WHERE id = #{id}
     </update>
 
+    <select id="selectRoleUser" parameterType="long" resultType="com.power.assistant.model.User">
+        SELECT u.* FROM t_user u
+        LEFT JOIN t_user_role r on r.user_id = u.id
+        WHERE r.role_id = #{roleId}
+    </select>
+
     <delete id="deleteById">
         DELETE FROM t_role where id = #{roleId}
     </delete>

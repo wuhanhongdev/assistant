@@ -26,4 +26,5 @@ public class UserVo {
     private String orgName;
     private Integer status;
     private boolean checked;
+    private String userName;
 }

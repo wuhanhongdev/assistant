@@ -154,11 +154,16 @@
         FROM t_member m
           LEFT JOIN t_org o ON o.id = m.org_id where 1=1
         <if test="orgId != null">
-            and m.org_id = #{orgId}
+            and m.org_id in (getChildList(#{orgId}))
         </if>
         <if test="memberId != null">
             and m.id = #{memberId}
         </if>
+        <if test="name != null">
+            and m.name like concat('%',#{name},'%')
+        </if>
+
+        order by m.name desc
     </select>
 
     <insert id="insertContent" parameterType="string">

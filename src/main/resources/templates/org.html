@@ -56,26 +56,15 @@
                                             <input type="hidden" name="pid" id="orgPid">
                                             <label class="control-label text-right col-md-3">上级机构</label>
                                             <div class="col-md-9">
-                                                <input type="text" id="parentName" name="parentName"
-                                                       class="form-control" required>
+                                                <input type="text" id="parentName" readonly name="parentName" class="form-control">
                                             </div>
                                         </div>
                                     </div>
-                                    <!--<div class="col-md-6">
-                                        <div class="form-group row">
-                                            <label class="control-label text-right col-md-3">机构代码</label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="code" name="code"
-                                                       class="form-control form-control-danger" required>
-                                            </div>
-                                        </div>
-                                    </div>-->
                                     <div class="col-md-6">
                                         <div class="form-group row">
                                             <label class="control-label text-right col-md-3">负责人</label>
                                             <div class="col-md-9">
-                                                <input type="text" id="managerName" name="managerName"
-                                                       class="form-control">
+                                                <input type="text" id="managerName" name="managerName" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -85,8 +74,7 @@
                                         <div class="form-group row">
                                             <label class="control-label text-right col-md-3">详细地址</label>
                                             <div class="col-md-9">
-                                                <input type="text" id="addressDetail" name="addressDetail"
-                                                       class="form-control">
+                                                <input type="text" id="addressDetail" name="addressDetail" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -100,21 +88,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="row">
-
-                                     <div class="col-md-6">
-                                         <div class="form-group row">
-                                             <label class="control-label text-right col-md-3">机构状态</label>
-                                             <div class="col-md-9">
-                                                 <select id="status" name="status" class="form-control custom-select" required>
-                                                     <option>&#45;&#45;选择状态&#45;&#45;</option>
-                                                     <option value="1">启用</option>
-                                                     <option value="0">禁用</option>
-                                                 </select>
-                                             </div>
-                                         </div>
-                                     </div>
-                                </div>-->
                             </div>
                             <hr>
                             <div class="form-actions">
@@ -123,8 +96,6 @@
                                         <div class="row">
                                             <div class="col-md-offset-3 col-md-9">
                                                 <button id="submitOrg" type="submit" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
-                                                <button type="submit" id="button-modify" disabled class="btn btn-warning">&nbsp;&nbsp;修改&nbsp;&nbsp;
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -146,6 +117,8 @@
                 Core.initTree("orgTree", Core.radioSetting("fullname", function (event, treeId, treeNode) {
                     $("#orgForm").fillValue(treeNode);
                     $("#button-modify").removeAttr("disabled");
+                    $("#parentName").val(treeNode.parentName);
+                    $("#pid").val(treeNode.pid);
                 }), result.data);
             }
         });

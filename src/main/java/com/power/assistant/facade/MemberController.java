@@ -36,7 +36,7 @@ import java.util.Map;
 @RequestMapping("/member")
 public class MemberController {
 
-    @Value("${config.ueditor.serverPath}")
+    @Value("${config.ueditor.serverPath.profile}")
     private String serverPath;
     @Value("${web.profile}")
     private String profilePath;
@@ -57,12 +57,8 @@ public class MemberController {
         PageModel pageModel = memberService.integrationList(pageParam,memberId);
         //支部介绍
         String detail = "";
-        List<OrgVo> orgs = orgService.selectOrgs();
-        for (OrgVo org : orgs) {
-            if (org.getId() == member.getOrgId()) {
-                detail = org.getDetail();
-            }
-        }
+        OrgVo org = orgService.orgInfo(member.getOrgId());
+        detail = org.getDetail();
         String content = (String) memberService.contentQuery().getData();
 
         modelAndView.getModelMap()
@@ -76,9 +72,9 @@ public class MemberController {
 
     @Authentication
     @PostMapping("/party/list")
-    public PageModel memberList(PageParam param){
+    public PageModel memberList(PageParam param,Long orgId,String name){
         try {
-            return memberService.partyList(param);
+            return memberService.partyList(param,orgId,name);
         } catch (Exception e) {
             return PageModel.error();
         }
@@ -108,12 +104,27 @@ public class MemberController {
             return DataModel.error(e.getMessage());
         }
     }
+    @Authentication
+    @PostMapping("/party/saveOrUpdate2Cache")
+    public DataModel saveOrUpdate2Cache(Member member, MultipartFile photo) {
+        try {
+            if (photo != null) {
+                String[] upload = FileUtils.upload(photo,serverPath,profilePath);
+                member.setPhotosrc(upload[0]);
+            }
+
+            return DataModel.ok(memberService.saveOrUpdate(member));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DataModel.error(e.getMessage());
+        }
+    }
 
     @Authentication
     @PostMapping("/activity/list")
-    public PageModel activityList(PageParam param){
+    public PageModel activityList(PageParam param,Long orgId){
         try {
-            return memberService.activityList(param);
+            return memberService.activityList(param,orgId);
         } catch (Exception e) {
             return PageModel.error();
         }

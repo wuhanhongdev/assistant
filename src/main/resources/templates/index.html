@@ -19,6 +19,8 @@
     <link href="css/style.css" rel="stylesheet">
     <link href="ztree/css/metroStyle/metroStyle.css" rel="stylesheet">
     <link href="grid/bootstrap-table.min.css" rel="stylesheet">
+    <link href="rate/themes/fontawesome-stars.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -36,12 +38,11 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="javascript:void(0)">
                     <b><img src="images/logo.png" alt="homepage" class="dark-logo"/></b>
-                    <span>管理平台</span>
+                    <span>智慧党建管理平台</span>
                 </a>
             </div>
             <div class="navbar-collapse">
                 <ul class="navbar-nav mr-auto mt-md-0">
-                    <h4 class="text-white">钱场镇智慧党建管理平台</h4>
                 </ul>
                 <ul class="navbar-nav my-lg-0">
                     <li class="nav-item">
@@ -114,8 +115,12 @@
 <script src="validator/localization/messages_zh.min.js"></script>
 <script src="js/lib/sweetalert/sweetalert.min.js"></script>
 <script src="js/lib/toastr/toastr.min.js"></script>
+<script src="rate/jquery.barrating.min.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script type="text/javascript" th:inline="javascript">
     var orgId = null;
+    var member = null;
+    var activity = null;
     var isInstance = 0;
     UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
     UE.Editor.prototype.getActionUrl = function(action) {

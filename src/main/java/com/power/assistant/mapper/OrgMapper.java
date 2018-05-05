@@ -5,6 +5,7 @@ import com.power.assistant.model.Org;
 import com.power.assistant.model.OrgVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +21,6 @@ public interface OrgMapper extends BaseMapper<Org> {
     int updateById(Org pojo);
 
     int deleteById(Long ordId);
+
+    List<OrgVo> selectOrgInfo(Long orgId);
 }

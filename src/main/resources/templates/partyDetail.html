@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<script>
+<head>
+<script th:inline="javascript">
     if (isInstance == 1) {
         UE.getEditor('editor').destroy();
     }
     var ue = UE.getEditor('editor');
+    var id = null;
     ue.addListener("ready", function () {
         isInstance = 1;
-        Core.ajaxGet("system/org/query?orgId="+orgId,function (result) {
-            if (result != null && result.code == 1) {
-                orgInfo = result.data;
-                UE.getEditor('editor').execCommand('insertHtml', orgInfo.detail);
-            }
-        });
-        $("textarea").remove();
+        id = member.id;
+        UE.getEditor('editor').execCommand('insertHtml', member.memberCreate);
     });
     $(function () {
-
         Core.click("button-detail-add",function () {
             var content = UE.getEditor('editor').getAllHtml();
-            var data = {detail:content,id:orgId};
-            Core.ajaxPost("system/org/saveOrUpdate",data,function (result) {
+            if(id == null) {
+                Core.toastrWarning("数据有误");
+                return;
+            }
+            var data = {memberCreate:content,id:id};
+            Core.ajaxPost("member/party/saveOrUpdate",data,function (result) {
                 if(result != null && result.code == 1) {
-                    alert("详情编辑成功");
-                    UE.getEditor('editor').destroy();
-                    isInstance = 0;
-                    Core.loadPage("jump?source=org","机构管理");
+                    Core.toastrSuccess("编辑成功");
+                    member = null;
+                    Core.loadPage("jump?source=partyMembers","党员信息管理");
                 }
             });
         });
         Core.click("button-detail-back",function () {
-            UE.getEditor('editor').destroy();
-            isInstance = 0;
-            Core.loadPage("jump?source=org","机构管理");
+            member = null;
+            Core.loadPage("jump?source=partyMembers","党员信息管理");
         });
     });
 </script>
+</head>
 <body>
+<input type="hidden" id="id" name="id">
 <div><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></div>
 <div class="row">
     <div class="text-left" style="margin-top: 15px;margin-left: 15px;">

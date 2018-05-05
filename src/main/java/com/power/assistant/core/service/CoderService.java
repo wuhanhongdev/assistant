@@ -26,7 +26,7 @@ public class CoderService {
 
     @Value("${web.qr-code-path}")
     private String uploadPath;
-    @Value("${config.ueditor.serverPath}")
+    @Value("${config.ueditor.serverPath.qrcode}")
     private String serverPath;
 
     public String encode(String contents) {

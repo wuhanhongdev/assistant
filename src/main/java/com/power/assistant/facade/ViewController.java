@@ -26,7 +26,7 @@ public class ViewController {
     @Autowired
     private UserService userService;
 
-    @Value("${config.ueditor.serverPath}")
+    @Value("${config.ueditor.serverPath.ueditorUpload}")
     private String serverPath;
 
     @RequestMapping("")

@@ -54,6 +54,25 @@
             and org.id = #{orgId}
         </if>
     </select>
+    <select id="selectOrgInfo" parameterType="long" resultType="com.power.assistant.model.OrgVo">
+      SELECT
+          org.id,
+          org.fullname,
+          org.shortname,
+          org.pid,
+          org.code,
+          org.address_detail as addressDetail,
+          org.phone,
+          org.manager_id as managerId,
+          org.status,
+          org.detail,
+          u.name as managerName,
+          o.fullname as parentName
+        FROM t_org org
+          LEFT JOIN t_org o ON o.id = org.pid
+          LEFT JOIN t_user u ON u.id = org.manager_id
+        WHERE FIND_IN_SET(org.id,getChildList(#{orgId}));
+    </select>
 
     <delete id="deleteById">
         DELETE FROM t_org where id = #{orgId}

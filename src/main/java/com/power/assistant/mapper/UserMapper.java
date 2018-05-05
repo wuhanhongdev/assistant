@@ -19,4 +19,6 @@ public interface UserMapper extends BaseMapper<User> {
     int deleteById(Long userId);
 
     User userLogin(Map<String, Object> param);
+
+    List<UserVo> selectAllUser();
 }

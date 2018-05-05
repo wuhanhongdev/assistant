@@ -52,6 +52,8 @@
                         if (result != null && result.code == 1) {
                             Core.toastrSuccess("删除成功");
                             Core.tableRefresh("roleList")
+                        } else {
+                            Core.toastrError(result.message);
                         }
                     });
                 });
@@ -68,7 +70,7 @@
                 roleId = select[0].id;
                 Core.ajaxGet("system/role/roleUser?roleId=" + select[0].id, function (result) {
                     if (result != null && result.code == 1) {
-                        Core.initTree("menuTree", Core.checkboxSetting("name", function (event, treeId, treeNode) {
+                        Core.initTree("menuTree", Core.checkboxSetting("userName", function (event, treeId, treeNode) {
 
                         }), result.data);
                     }
@@ -130,8 +132,8 @@
         <button type="button" id="button-add" class="btn btn-success m-b-10 m-l-5">&nbsp;&nbsp;添加&nbsp;&nbsp;</button>
         <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;
         </button>
-        <button type="button" id="button-role" class="btn btn-warning m-b-10 m-l-5">设置权限</button>
-        <button type="button" id="button-add-user" class="btn btn-warning m-b-10 m-l-5">设置角色</button>
+        <button type="button" id="button-role" class="btn btn-warning m-b-10 m-l-5">菜单权限</button>
+        <button type="button" id="button-add-user" class="btn btn-warning m-b-10 m-l-5">设置操作员</button>
         <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
     </div>
 </div>

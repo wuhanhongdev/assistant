@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "t_org")
@@ -25,5 +26,8 @@ public class Org {
   private String detail;
   private Long status;
   private Long canDelete;
-
+  @Transient
+  private String parentName;
+  @Transient
+  private String managerName;
 }

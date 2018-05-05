@@ -22,7 +22,10 @@
     </select>
 
     <select id="selectRoleUser" parameterType="long" resultType="com.power.assistant.model.UserVo">
-        SELECT * FROM t_user WHERE id in (
+
+        SELECT u.id,concat(u.name,'(',o.fullname,')') as name FROM t_user u
+        LEFT JOIN t_org o ON o.id = u.org_id
+        WHERE u.id in (
           SELECT user_id FROM t_user_role WHERE role_id = #{roleId}
         )
     </select>

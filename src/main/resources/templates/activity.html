@@ -2,40 +2,47 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <script>
+
     function showOrgTree() {
         $("#orgTreeDiv").css("display","block");
     }
     $(function () {
+        Core.click("button-search",function () {
+            $("#activityList").bootstrapTable('refresh', {url: 'member/activity/list?orgId='+$("#orgId").val()});
+        });
+        Core.ajaxGet("system/org/list", function (result) {
+            if (result != null && result.code == 1) {
+                Core.initTree("orgTree", Core.radioSetting("fullname", function (event, treeId, treeNode) {
+                    $("#orgId").val(treeNode.id);
+                    $("#orgName").val(treeNode.fullname);
+
+                    $("#orgTreeDiv").css("display", "none");
+                }), result.data);
+            }
+        });
         Core.table("activityList", "member/activity/list", [
             {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
             {title: 'id', field: 'id', visible: false},
+            {title: 'content', field: 'content', visible: false},
             {title: 'orgId', field: 'orgId', visible: false},
             {title: '机构名称', field: 'orgName', sortable: false, align: 'center'},
             {title: '年度', field: 'yearNo', sortable: false, align: 'center'},
             {title: '月度', field: 'period', sortable: false, align: 'center'},
-            {title: '主题名称', field: 'name', sortable: false, align: 'center'},
-            {title: '主题内容', field: 'content', sortable: false, align: 'center'}
+            {title: '活动名称', field: 'name', sortable: false, align: 'center'}
         ]);
-        Core.ajaxGet("system/org/list", function (result) {
-            if (result != null && result.code == 1) {
-                Core.initTree("orgTree", Core.radioSetting("fullname", function (event, treeId, treeNode) {
-                    if(treeNode.pid != -1) {
-                        $("#orgId").val(treeNode.id);
-                        $("#orgName").val(treeNode.fullname);
 
-                        $("#orgTreeDiv").css("display","none");
-                    }
-                }), result.data);
-            }
-        });
         Core.click("button-modify", function () {
             var select = $("#activityList").bootstrapTable('getSelections');
             if (select.length != 1) {
                 Core.toastrError("数据选择错误");
                 return;
             }
-            var data = select[0];
-            $("#activityForm").fillValue(data);
+            activity = select[0];
+            Core.loadPage("jump?source=activityForm","主题活动修改")
+        });
+        Core.click("button-add", function () {
+            activity = null;
+            Core.loadPage("jump?source=activityForm","主题活动添加")
         });
         Core.click("button-delete", function () {
             var select = $("#activityList").bootstrapTable('getSelections');
@@ -47,147 +54,46 @@
                 Core.ajaxGet("member/activity/delete?activityId="+select[0].id,function (result) {
                     if(result != null && result.code == 1) {
                         Core.toastrSuccess("删除成功");
-                        Core.tableRefresh("memberList")
+                        Core.tableRefresh("activityList")
                     }
                 });
             });
-        });
-        $("#activityForm").validate({
-            submitHandler: function(form) {
-                jQuery(form).ajaxSubmit(function (result) {
-                    if(result != null && result.code == 1) {
-                        Core.toastrSuccess("操作成功");
-                        Core.tableRefresh("activityList");
-                    } else {
-                        Core.toastrError(result.message);
-                    }
-                    $("#activityForm").resetForm();
-                });
-            }
         });
     });
 </script>
 </head>
 <body>
 <div class="text-left" style="margin-top: 15px;margin-left: 15px;">
+    <button type="button" id="button-add" class="btn btn-success m-b-10 m-l-5">&nbsp;&nbsp;添加&nbsp;&nbsp;</button>
     <button type="button" id="button-modify" class="btn btn-warning m-b-10 m-l-5">&nbsp;&nbsp;修改&nbsp;&nbsp;</button>
     <button type="button" id="button-delete" class="btn btn-danger m-b-10 m-l-5">&nbsp;&nbsp;删除&nbsp;&nbsp;</button>
 </div>
 <div class="row">
-    <div class="card card-outline-info col-lg-6">
-        <div class="card-header">
-            <h4 class="m-b-0 text-white">主题列表</h4>
-        </div>
+    <div class="card card-outline-info col-lg-12">
         <div class="card-body">
             <div class="card-content">
-                <table id="activityList" class="table table-hover"></table>
-            </div>
-        </div>
-    </div>
-    <div class="card card-outline-info col-lg-5">
-        <div class="card-header">
-            <h4 class="m-b-0 text-white">主题信息</h4>
-        </div>
-        <div class="card-body">
-            <div class="card-content">
-                <div class="form-validation" style="margin-top: 15px;">
-                    <form class="form-valide form-horizontal" action="member/activity/saveOrUpdate" method="post" id="activityForm">
+                <div class="form-validation">
+                    <form class="form-valide form-horizontal" method="post" id="activityForm">
                         <div class="form-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <input type="hidden" name="id" id="id">
-                                        <label class="control-label text-right col-md-3">主题名称</label>
-                                        <div class="col-md-9">
-                                            <input type="text" id="name" name="name" class="form-control" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group row">
                                         <input type="hidden" name="orgId" id="orgId">
                                         <label class="control-label text-right col-md-3">归属机构</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="orgName" name="orgName" readonly onclick="showOrgTree()" class="form-control form-control-danger" required>
-                                            <div id="orgTreeDiv" style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
+                                            <input type="text" id="orgName" name="orgName" readonly
+                                                   onclick="showOrgTree()" class="form-control form-control-danger"
+                                                   required>
+                                            <div id="orgTreeDiv"
+                                                 style="z-index: 1;position:absolute; width:300px; height:168px; top:29px; background:#fff; border:1px solid #eee;overflow-y:auto; display:none;">
                                                 <ul id="orgTree" class="ztree"></ul>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">年度</label>
-                                        <div class="col-md-9">
-                                            <select id="yearNo" name="yearNo" class="form-control custom-select" required>
-                                                <option>--选择年度--</option>
-                                                <option value="2015">2015</option>
-                                                <option value="2016">2016</option>
-                                                <option value="2017">2017</option>
-                                                <option value="2018">2018</option>
-                                                <option value="2019">2019</option>
-                                                <option value="2020">2020</option>
-                                                <option value="2021">2021</option>
-                                                <option value="2022">2022</option>
-                                                <option value="2023">2023</option>
-                                                <option value="2024">2024</option>
-                                                <option value="2025">2025</option>
-                                                <option value="2026">2026</option>
-                                                <option value="2027">2027</option>
-                                                <option value="2028">2028</option>
-                                                <option value="2029">2029</option>
-                                                <option value="2030">2030</option>
-                                                <option value="2031">2031</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                <div class="col-md-4">
+                                    <button type="button" id="button-search" class="btn btn-warning m-b-10 m-l-5">查询</button>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">月度</label>
-                                        <div class="col-md-9">
-                                            <select id="period" name="period" class="form-control custom-select" required>
-                                                <option>--选择月度--</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group row">
-                                    <label class="control-label text-right col-md-1">活动内容</label>
-                                    <div class="col-md-11">
-                                        <textarea class="form-control" name="content" style="vertical-align:top;resize: none;height: 100px;"  rows="6" placeholder="活动内容"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                        <hr>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit"  class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6"></div>
                             </div>
                         </div>
                     </form>
@@ -195,6 +101,19 @@
             </div>
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="card card-outline-info col-lg-12">
+        <div class="card-header">
+            <h4 class="m-b-0 text-white">活动列表</h4>
+        </div>
+        <div class="card-body">
+            <div class="card-content">
+                <table id="activityList" class="table table-hover"></table>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

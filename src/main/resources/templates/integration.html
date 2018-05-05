@@ -3,22 +3,17 @@
 <head>
 <script th:inline="javascript">
     $(function () {
-        /*<![CDATA[*/
-        var param = [[${param}]];
-        /*]]>*/
-        if(param != null && param.param != null && param.param[0] != null) {
-            var formData = param.param[0];
-            $("#memberId").val(formData);
-            Core.table("integrationList", "member/integration/list?memberId="+formData, [
-                {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
-                {title: 'id', field: 'id', visible: false},
-                {title: 'memberId', field: 'memberId', visible: false},
-                {title: '年度', field: 'yearNo', sortable: false, align: 'center'},
-                {title: '党员姓名', field: 'memberName', sortable: false, align: 'center'},
-                {title: '积分项目', field: 'content', sortable: false, align: 'center'},
-                {title: '分数', field: 'score', sortable: false, align: 'center'}
-            ]);
-        }
+        $("#memberId").val(member.id);
+        Core.table("integrationList", "member/integration/list?memberId="+member.id, [
+            {title: '全选', field: 'select', checkbox: true, width: 25, align: 'center', align: 'middle'},
+            {title: 'id', field: 'id', visible: false},
+            {title: 'memberId', field: 'memberId', visible: false},
+            {title: '年度', field: 'yearNo', sortable: false, align: 'center'},
+            {title: '党员姓名', field: 'memberName', sortable: false, align: 'center'},
+            {title: '积分项目', field: 'content', sortable: false, align: 'center'},
+            {title: '积分', field: 'score', sortable: false, align: 'center'}
+        ]);
+        $("#memberForm").fillValue(member);
 
         Core.click("button-modify", function () {
             var select = $("#integrationList").bootstrapTable('getSelections');
@@ -38,6 +33,14 @@
             }
         });
 
+        $("#memberForm").validate({
+            submitHandler: function(form) {
+                jQuery(form).ajaxSubmit(function () {
+                    Core.toastrSuccess("操作成功");
+                });
+            }
+        });
+
         Core.click("button-delete", function () {
             var select = $("#integrationList").bootstrapTable('getSelections');
             if(select.length != 1) {
@@ -52,6 +55,10 @@
                     }
                 });
             });
+        });
+        Core.click("btn-back", function () {
+            member = null;
+            Core.loadPage("jump?source=partyMembers","党员信息管理");
         });
     });
 </script>
@@ -72,79 +79,131 @@
             </div>
         </div>
     </div>
-    <div class="card card-outline-info col-lg-5">
-        <div class="card-header">
-            <h4 class="m-b-0 text-white">积分信息</h4>
+    <div class="col-lg-5">
+        <div class="card card-outline-info">
+            <div class="card-body">
+                <div class="card-content">
+                    <div class="form-validation">
+                        <form class="form-valide form-horizontal" action="member/party/saveOrUpdate" method="post" id="memberForm">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">评议等次</label>
+                                            <div class="col-md-9">
+                                                <input type="hidden" name="id">
+                                                <select name="level" class="form-control custom-select" required>
+                                                    <option value="优秀">优秀</option>
+                                                    <option value="良好">良好</option>
+                                                    <option value="中等">中等</option>
+                                                    <option value="一般">一般</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">星级</label>
+                                            <div class="col-md-9">
+                                                <input type="number" id="starMember" name="starMember" class="form-control starManager" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button type="submit" id="btn-update" class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="card-content">
-                <div class="form-validation" style="margin-top: 15px;">
-                    <form class="form-valide form-horizontal" action="member/integration/saveOrUpdate" method="post" id="integrationForm">
-                        <input type="hidden" name="id" id="id">
-                        <input type="hidden" name="memberId" id="memberId" required>
-                        <div class="form-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">年度</label>
-                                        <div class="col-md-9">
-                                            <select id="yearNo" name="yearNo" class="form-control custom-select" required>
-                                                <option>------选择年度------</option>
-                                                <option value="2015">2015</option>
-                                                <option value="2016">2016</option>
-                                                <option value="2017">2017</option>
-                                                <option value="2018">2018</option>
-                                                <option value="2019">2019</option>
-                                                <option value="2020">2020</option>
-                                                <option value="2021">2021</option>
-                                                <option value="2022">2022</option>
-                                                <option value="2023">2023</option>
-                                                <option value="2024">2024</option>
-                                                <option value="2025">2025</option>
-                                                <option value="2026">2026</option>
-                                                <option value="2027">2027</option>
-                                                <option value="2028">2028</option>
-                                                <option value="2029">2029</option>
-                                                <option value="2030">2030</option>
-                                                <option value="2031">2031</option>
-                                            </select>
+        <div class="card card-outline-info">
+            <div class="card-header">
+                <h4 class="m-b-0 text-white">积分信息</h4>
+            </div>
+            <div class="card-body">
+                <div class="card-content">
+                    <div class="form-validation" style="margin-top: 15px;">
+                        <form class="form-valide form-horizontal" action="member/integration/saveOrUpdate" method="post" id="integrationForm">
+                            <input type="hidden" name="id" id="id">
+                            <input type="hidden" name="memberId" id="memberId" required>
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">年度</label>
+                                            <div class="col-md-9">
+                                                <select id="yearNo" name="yearNo" class="form-control custom-select" required>
+                                                    <option>------选择年度------</option>
+                                                    <option value="2015">2015</option>
+                                                    <option value="2016">2016</option>
+                                                    <option value="2017">2017</option>
+                                                    <option value="2018">2018</option>
+                                                    <option value="2019">2019</option>
+                                                    <option value="2020">2020</option>
+                                                    <option value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                    <option value="2030">2030</option>
+                                                    <option value="2031">2031</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-3">积分</label>
+                                            <div class="col-md-9">
+                                                <input type="number" id="score" name="score" class="form-control" required>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-3">积分分数</label>
-                                        <div class="col-md-9">
-                                            <input type="number" id="score" name="score" class="form-control" required>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="control-label text-right col-md-1">积分项目</label>
+                                            <div class="col-md-11">
+                                                <textarea class="form-control" name="content" style="vertical-align:top;resize: none;height: 100px;"  rows="6" placeholder="积分项目"></textarea>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group row">
-                                        <label class="control-label text-right col-md-1">积分项目</label>
-                                        <div class="col-md-11">
-                                            <textarea class="form-control" name="content" style="vertical-align:top;resize: none;height: 100px;"  rows="6" placeholder="积分项目"></textarea>
+                            <hr>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-offset-3 col-md-9">
+                                                <button type="submit"  class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
+                                                <button type="button" id="btn-back" class="btn btn-success">&nbsp;&nbsp;返回&nbsp;&nbsp;</button>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6"></div>
                                 </div>
                             </div>
-                        </div>
-                        <hr>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit"  class="btn btn-success">&nbsp;&nbsp;保存&nbsp;&nbsp;</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6"></div>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

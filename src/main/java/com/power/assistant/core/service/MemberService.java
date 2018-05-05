@@ -18,10 +18,12 @@ import org.apache.xmlbeans.impl.jam.mutable.MAnnotatedElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wuhanhong
@@ -42,9 +44,16 @@ public class MemberService {
     @Value("${config.ueditor.web-qr-code-path}")
     private String qrCodePath;
 
-    public PageModel partyList(PageParam param) {
+    public PageModel partyList(PageParam param,Long orgId,String name) {
         PageHelper.offsetPage(param.getOffset(),param.getLimit());
-        List<MemberVo> memberVos = memberMapper.selectMemberInfo(new HashMap<>());
+        Map map =  new HashMap<>();
+        if (orgId != null) {
+            map.put("orgId",orgId);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            map.put("name",name);
+        }
+        List<MemberVo> memberVos = memberMapper.selectMemberInfo(map);
         PageInfo<MemberVo> pageInfo = new PageInfo<>(memberVos);
 
         return PageModel.ok(pageInfo.getTotal(),pageInfo.getList());
@@ -76,9 +85,15 @@ public class MemberService {
         }
     }
 
-    public PageModel activityList(PageParam param) {
+    public PageModel activityList(PageParam param,Long orgId) {
+
+        Map map = new HashMap<>();
+
+        if (orgId != null) {
+            map.put("orgId",orgId);
+        }
         PageHelper.offsetPage(param.getOffset(),param.getLimit());
-        List<Activity> activities = activityMapper.selectActivityInfo(new HashMap<>());
+        List<Activity> activities = activityMapper.selectActivityInfo(map);
         PageInfo<Activity> pageInfo = new PageInfo<>(activities);
 
         return PageModel.ok(pageInfo.getTotal(),pageInfo.getList());

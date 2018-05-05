@@ -14,7 +14,14 @@
         <result column="home_detail" property="homeDetail"/>
         <result column="phone" property="phone"/>
         <result column="mobile" property="mobile"/>
+        <result column="org_id" property="orgId"/>
     </resultMap>
+
+
+    <select id="selectAllUser" resultType="com.power.assistant.model.UserVo">
+        SELECT u.*,concat(u.name,'(',o.fullname,')') as userName FROM t_user u
+        LEFT JOIN t_org o ON o.id = u.org_id
+    </select>
 
     <select id="userLogin" parameterType="map" resultMap="AllColumnMap">
         SELECT * FROM t_user
@@ -41,7 +48,10 @@
         LEFT JOIN t_org o ON o.id = u.org_id
         WHERE u.status = 1
         <if test="orgId != null">
-            and u.org_id = #{orgId}
+            and u.org_id in (getChildList(#orgId))
+        </if>
+        <if test="orgId != null">
+            and u.name like concat('%',#{name},'%')
         </if>
     </select>
 

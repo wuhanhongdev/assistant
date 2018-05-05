@@ -24,8 +24,8 @@ public class OrgService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<OrgVo> selectOrgs() {
-        return orgMapper.selectOrgDetailInfo(new HashMap<>());
+    public List<OrgVo> selectOrgs(Long orgId) {
+        return orgMapper.selectOrgInfo(orgId);
     }
 
     public int saveOrUpdate(Org org) {

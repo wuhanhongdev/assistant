@@ -43,6 +43,11 @@ public class RoleService {
     }
 
     public int deleteRole(Long roleId) {
+
+        List<User> users = roleMapper.selectRoleUser(roleId);
+        if (users != null && users.size() > 0) {
+            throw new RuntimeException("该角色下还包含有人员，不能删除!");
+        }
         return roleMapper.deleteById(roleId);
     }
 
@@ -98,11 +103,11 @@ public class RoleService {
     }
 
     public List<UserVo> roleUser(Long roleId) {
-        List<User> users = userMapper.selectAll();
+        List<UserVo> users = userMapper.selectAllUser();
         List<UserVo> userVos = menuMapper.selectRoleUser(roleId);
 
         List<UserVo> roleUsers = new ArrayList<>();
-        for (User user : users) {
+        for (UserVo user : users) {
             UserVo vo = new UserVo();
             BeanUtils.copyProperties(user,vo);
             for (UserVo userVo : userVos) {

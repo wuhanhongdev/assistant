@@ -1,9 +1,6 @@
 package com.power.assistant.facade;
 
-import com.power.assistant.base.DataModel;
-import com.power.assistant.base.FileUtils;
-import com.power.assistant.base.PageModel;
-import com.power.assistant.base.PageParam;
+import com.power.assistant.base.*;
 import com.power.assistant.core.annotation.Authentication;
 import com.power.assistant.core.service.MenuService;
 import com.power.assistant.core.service.OrgService;
@@ -16,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author wuhanhong
  * @date 2018 - 04 - 29
@@ -24,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/system")
 public class SystemController {
 
-    @Value("${config.ueditor.serverPath}")
+    @Value("${config.ueditor.serverPath.profile}")
     private String serverPath;
     @Value("${web.profile}")
     private String profilePath;
@@ -49,9 +48,20 @@ public class SystemController {
 
     @Authentication
     @GetMapping("/org/list")
-    public DataModel orgList(){
+    public DataModel orgList(HttpServletRequest request){
         try {
-            return DataModel.ok(orgService.selectOrgs());
+            User user = (User) request.getSession().getAttribute(Constants.SESSION);
+            return DataModel.ok(orgService.selectOrgs(user.getOrgId()));
+        } catch (Exception e) {
+            return DataModel.error(e.getMessage());
+        }
+    }
+
+    @Authentication
+    @GetMapping("/org/list2")
+    public DataModel orgList2(){
+        try {
+            return DataModel.ok(orgService.selectOrgs(Long.valueOf(1)));
         } catch (Exception e) {
             return DataModel.error(e.getMessage());
         }
@@ -114,10 +124,10 @@ public class SystemController {
 
     @Authentication
     @PostMapping("/user/list")
-    public PageModel<UserVo> userList(PageParam param){
+    public PageModel<UserVo> userList(PageParam param, Long orgId, String name){
 
         try {
-            return userService.list(param);
+            return userService.list(param,orgId,name);
         } catch (Exception e) {
             return PageModel.error();
         }

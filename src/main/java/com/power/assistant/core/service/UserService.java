@@ -24,10 +24,17 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public PageModel<UserVo> list(PageParam param) {
+    public PageModel<UserVo> list(PageParam param, Long orgId, String name) {
 
         PageHelper.offsetPage(param.getOffset(),param.getLimit());
-        List<UserVo> users = userMapper.selectUserInfo(new HashMap<>());
+        Map map =  new HashMap<>();
+        if (orgId != null) {
+            map.put("orgId",orgId);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            map.put("name",name);
+        }
+        List<UserVo> users = userMapper.selectUserInfo(map);
         PageInfo pageInfo = new PageInfo(users);
 
         return PageModel.ok(pageInfo.getTotal(), pageInfo.getList());
@@ -36,8 +43,19 @@ public class UserService {
     public int saveOrUpdate(User user) {
         if (!StringUtils.isEmpty(user.getPassword())) {
             user.setPassword(MD5.crypt(user.getPassword()));
+        }else {
+            user.setPassword(null);
         }
         if (user.getId() == null) {
+
+            //判断登录
+            Map map =  new HashMap<>();
+            map.put("loginname",user.getLoginname());
+            List<UserVo> users = userMapper.selectUserInfo(map);
+            if (users != null && users.size()>0){
+                throw new RuntimeException("登录名重复");
+            }
+
             return userMapper.insertUser(user);
         } else {
             return userMapper.updateById(user);

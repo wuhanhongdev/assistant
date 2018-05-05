@@ -21,8 +21,12 @@ spring:
     suffix: .html
 config:
   ueditor:
-    serverPath: ${app.serverPath} #此处最后需带上/否则无法识别
-    web-qr-code-path: ${app.qrcodepath} #二维码地址
+    serverPath:
+      profile: ${app.profilePath}
+      qrcode: ${app.qrcodePath}
+      ueditor: ${app.ueditorPath}
+      ueditorUpload: ${app.ueditorUpload}
+    web-qr-code-path: ${app.qrcodeurl} #二维码地址
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
 database:
